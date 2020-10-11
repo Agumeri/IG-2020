@@ -18,6 +18,9 @@ void Malla3D::draw_ModoInmediato()
   // (son tuplas de 3 valores float, sin espacio entre ellas)
   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
 
+  // indicamos el color con el que se van a pintar las caras
+  glColorPointer(3, GL_FLOAT, 0, color);
+
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
   glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());

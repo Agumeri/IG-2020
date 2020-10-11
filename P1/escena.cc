@@ -67,8 +67,10 @@ void Escena::dibujar()
     // o
     // tetraedro.draw()
 
-   //  cubo->draw();
-   tetraedro->draw();
+    // Seleccion del objeto a dibujar
+   if(obj == CUBO) cubo->draw();
+   
+   if(obj == TETRAEDRO) tetraedro->draw();
 }
 
 //**************************************************************************
@@ -87,9 +89,17 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
    switch( toupper(tecla) )
    {
       case 'Q' :
-         if (modoMenu!=NADA)
-            modoMenu=NADA;            
-         else {
+         if (modoMenu!=NADA){
+            if(modoMenu==SELOBJETO){
+               glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
+               printf("Limpiando pantalla...\n\n");
+            } 
+            modoMenu=NADA;
+            printf("Selecciona un modo de los disponibles: \n");
+            printf("'O': Seleccion de objeto\n");
+            printf("'V': Seleccion de modo de visualización\n");
+            printf("'D': Seleccion de dibujado\n");           
+         }else {
             salir=true ;
          }
          break ;
@@ -108,7 +118,30 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          modoMenu=SELDIBUJADO;
          break ;
          // COMPLETAR con los diferentes opciones de teclado
-            
+      
+
+      // MENUS DE LAS FIGURAS SELECCIONADAS
+         //CUBO
+         case 'C':
+         // ESTAMOS EN MODO CUBO SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            printf("Cubo seleccionado.\n");
+            printf("Pulse 'Q' para salir a la selección de objetos\n");
+            obj=CUBO;
+            // printf("Pulse 'Q' para salir a la selección de objetos");
+         }
+         break;
+
+         //-------------------------------------------------
+         //TETRAEDRO
+         case 'T':
+         // ESTAMOS EN MODO CUBO SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            printf("Tetraedro seleccionado.\n");
+            obj=TETRAEDRO;
+         }
+         break;
+
    }
    return salir;
 }

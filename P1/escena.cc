@@ -91,14 +91,15 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'Q' :
          if (modoMenu!=NADA){
             if(modoMenu==SELOBJETO){
-               glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
+               // glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
                printf("Limpiando pantalla...\n\n");
             } 
             modoMenu=NADA;
             printf("Selecciona un modo de los disponibles: \n");
             printf("'O': Seleccion de objeto\n");
             printf("'V': Seleccion de modo de visualización\n");
-            printf("'D': Seleccion de dibujado\n");           
+            printf("'D': Seleccion de dibujado\n");
+            printf("'Q': Salir del programa\n");       
          }else {
             salir=true ;
          }
@@ -110,7 +111,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          break ;
         case 'V' :
          // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
-         printf("Opciones disponibles: \n'L': Linea; \n'P': Puntos \n'S': Solido");
+         printf("Opciones disponibles: \n'L': Linea; \n'P': Puntos \n'S': Solido\n");
          modoMenu=SELVISUALIZACION;
          break ;
        case 'D' :

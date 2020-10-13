@@ -24,8 +24,8 @@ Cubo::Cubo(float lado)
    v[3] = {lado/2, lado/2, lado/2};      //v3
    v[4] = {lado/2, -lado/2, -lado/2};    //v4
    v[5] = {lado/2, lado/2, -lado/2};     //v5
-   v[6] = {-lado/2, lado/2, -lado/2};     //v6
-   v[7] = {-lado/2, -lado/2, -lado/2};     //v7
+   v[6] = {-lado/2, lado/2, -lado/2};    //v6
+   v[7] = {-lado/2, -lado/2, -lado/2};   //v7
    
 
    // Tabla de caras

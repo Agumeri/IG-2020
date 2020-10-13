@@ -28,6 +28,9 @@ class Malla3D
    // dibuja el objeto en modo diferido (usando VBOs)
    void draw_ModoDiferido();
 
+   // funcion para producir un identificador de VBO
+   GLuint CrearVBO( GLuint tipo_vbo, GLuint tamanio_bytes, GLvoid * puntero_ram);
+
    // función que redibuja el objeto
    // está función llama a 'draw_ModoInmediato' (modo inmediato)
    // o bien a 'draw_ModoDiferido' (modo diferido, VBOs)
@@ -42,16 +45,19 @@ class Malla3D
 
    // completar: tabla de colores, tabla de normales de vértices
    private:
-      GLfloat color[24] = {
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-         0, 255, 0,
-      };
+      GLuint id_vbo_ver = 0;
+      GLuint id_vbo_tri = 0;
+      
+      // GLfloat color[24] = {
+      //    0, 255, 0,
+      //    0, 0, 255,
+      //    0, 255, 0,
+      //    0, 0, 255,
+      //    0, 255, 0,
+      //    0, 0, 255,
+      //    0, 255, 0,
+      //    0, 0, 255,
+      // };
 } ;
 
 

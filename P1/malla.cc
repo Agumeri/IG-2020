@@ -10,7 +10,7 @@
 // Visualización en modo inmediato con 'glDrawElements'
 
 void Malla3D::draw_ModoInmediato()
-{  
+{ 
   // habilitar uso de un array de vertices
   glEnableClientState( GL_VERTEX_ARRAY );
   
@@ -94,10 +94,12 @@ void Malla3D::draw_ModoDiferido()
 // Función de visualización de la malla,
 // puede llamar a  draw_ModoInmediato o bien a draw_ModoDiferido
 
-void Malla3D::draw()
+void Malla3D::draw(int modo_dibujado)
 {
    // completar .....(práctica 1)
-   // this->draw_ModoInmediato();
-   this->draw_ModoDiferido();
+   if(modo_dibujado == 1)
+      this->draw_ModoInmediato();
+   else if(modo_dibujado == 2)
+      this->draw_ModoDiferido();
 }
 

@@ -8,6 +8,8 @@
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO} menu;
 typedef enum {VACIO, CUBO, TETRAEDRO} objetos;
+typedef enum {INMEDIATO, DIFERIDO} dibujado;
+typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ} visualizado;
 
 class Escena
 {
@@ -34,8 +36,11 @@ class Escena
 
    void clear_window();
 
+   // inicialización de los enum
    menu modoMenu=NADA;
    objetos obj=VACIO;
+   dibujado tipo_dibujo=INMEDIATO;
+   visualizado tipo_visual=SOLIDO;
 
    
    // Objetos de la escena

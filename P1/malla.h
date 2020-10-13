@@ -34,7 +34,7 @@ class Malla3D
    // función que redibuja el objeto
    // está función llama a 'draw_ModoInmediato' (modo inmediato)
    // o bien a 'draw_ModoDiferido' (modo diferido, VBOs)
-   void draw() ;
+   void draw(int modo_dibujado) ;
 
    protected:
 
@@ -47,7 +47,7 @@ class Malla3D
    private:
       GLuint id_vbo_ver = 0;
       GLuint id_vbo_tri = 0;
-      
+
       // GLfloat color[24] = {
       //    0, 255, 0,
       //    0, 0, 255,

@@ -6,27 +6,61 @@
 // Clase Malla3D
 //
 // *****************************************************************************
+// Visualizacion en modo ajedrez 
+void Malla3D::draw_ModoAjedrez(){
+   // Utilizamos auxiliares para pintar las caras impares y pares
+   std::vector<Tupla3i> f_aux, f_a, f_b;
+   f_aux = f;
+
+   // Distribuimos los indices de las caras en dos variables
+   for(int i=0; i<f_aux.size()-1; i++){
+      f_a.push_back(f_aux[i]);
+      f_b.push_back(f_aux[i+1]);
+   }
+
+   glEnableClientState(GL_VERTEX_ARRAY);
+   glEnableClientState(GL_COLOR_ARRAY);
+
+   glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
+   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+   glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
+
+   glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
+   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+   glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
+
+   // deshabilitar array de vertices
+   glDisableClientState( GL_VERTEX_ARRAY );
+   glDisableClientState( GL_COLOR_ARRAY );
+
+}
+
 
 // Visualización en modo inmediato con 'glDrawElements'
 
-void Malla3D::draw_ModoInmediato()
+void Malla3D::draw_ModoInmediato(bool puntos, bool lineas,bool solido)
 { 
   // habilitar uso de un array de vertices
   glEnableClientState( GL_VERTEX_ARRAY );
-  
+  glEnableClientState(GL_COLOR_ARRAY);
+
+  glColorPointer(3, GL_FLOAT, 0, color_lines);
   // indicar el formato y la direccion de memoria del array de vertices
   // (son tuplas de 3 valores float, sin espacio entre ellas)
   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
-
-  // indicamos el color con el que se van a pintar las caras
-//   glColorPointer(3, GL_FLOAT, 0, color);
-
+  
+  // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
+  if(puntos) glColorPointer(3, GL_FLOAT, 0, color_points);
+  if(lineas) glColorPointer(3, GL_FLOAT, 0, color_lines);
+  if(solido) glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
+  
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
   glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());
 
-  // deshabilitar array de vertices
+  // deshabilitar array de vertices y el color
   glDisableClientState( GL_VERTEX_ARRAY );
+  glDisableClientState( GL_COLOR_ARRAY );
   
 }
 // -----------------------------------------------------------------------------
@@ -49,17 +83,18 @@ GLuint Malla3D::CrearVBO( GLuint tipo_vbo, GLuint tamanio_bytes, GLvoid * punter
 // -----------------------------------------------------------------------------
 // Visualización en modo diferido con 'glDrawElements' (usando VBOs)
 
-void Malla3D::draw_ModoDiferido()
+void Malla3D::draw_ModoDiferido(bool puntos, bool lineas,bool solido)
 {
    // (la primera vez, se deben crear los VBOs y guardar sus identificadores en el objeto)
    // completar (práctica 1)
    // .....
+   
 
    // creamos los identificadores del VBO para las caras y para los vertices
    if (id_vbo_ver == 0 && id_vbo_tri == 0)
    {
-      id_vbo_ver = CrearVBO(GL_ARRAY_BUFFER, 3 * sizeof(float) * v.size(), v.data());       // id para los vertices
-      id_vbo_tri = CrearVBO(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(int) * f.size(), f.data()); // id para las caras
+      id_vbo_ver = CrearVBO(GL_ARRAY_BUFFER,3*sizeof(float) * v.size(), v.data());       // id para los vertices
+      id_vbo_tri = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f.size(), f.data()); // id para las caras
    }
 
    // una vez creados, procedemos a visualizar la malla
@@ -81,25 +116,52 @@ void Malla3D::draw_ModoDiferido()
    // activar VBO de triangulos
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri);
 
+   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
+  if(puntos) glColorPointer(3, GL_FLOAT, 0, color_points);
+  if(lineas) glColorPointer(3, GL_FLOAT, 0, color_lines);
+  if(solido) glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
+
    // dibujamos los triangulos
    glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
 
    // desactivar VBO de triangulos
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-   // desactivar uso de array de vertices
+   // desactivar uso de array de vertices y color
    glDisableClientState(GL_VERTEX_ARRAY);
+   glDisableClientState(GL_COLOR_ARRAY);
+
 }
 // -----------------------------------------------------------------------------
 // Función de visualización de la malla,
 // puede llamar a  draw_ModoInmediato o bien a draw_ModoDiferido
 
-void Malla3D::draw(int modo_dibujado)
+void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool ajedrez)
 {
    // completar .....(práctica 1)
+   glEnable(GL_CULL_FACE);
+
+   if(puntos){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+      // hacemos que los puntos sean mas grandes y aumentamos su tamaño para que sean visibles
+      glEnable(GL_PROGRAM_POINT_SIZE);
+      glPointSize(3);
+   }
+   
+   if(lineas)
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   
+   if(solido){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+   }
+   // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
+   // solido y ajedrez serán independientes, mientras este ajedrez, no se podran ver los otros 3
    if(modo_dibujado == 1)
-      this->draw_ModoInmediato();
+      this->draw_ModoInmediato(puntos, lineas, solido);
    else if(modo_dibujado == 2)
-      this->draw_ModoDiferido();
+      this->draw_ModoDiferido(puntos, lineas, solido);
+   
+   if(ajedrez)
+      this->draw_ModoAjedrez();
 }
 

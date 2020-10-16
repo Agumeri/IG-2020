@@ -15,9 +15,6 @@ class Escena
 {
 
    private:
-
-   
-
  // ** PARÁMETROS DE LA CÁMARA (PROVISIONAL)
        
        // variables que definen la posicion de la camara en coordenadas polares
@@ -48,6 +45,8 @@ class Escena
    Cubo * cubo = nullptr ; // es importante inicializarlo a 'nullptr'
    Tetraedro * tetraedro= nullptr ; // es importante inicializarlo a 'nullptr'
 
+    //Array para comprobar que modos de visualizacion esta activado
+    bool modo_visual[4] = {false,false,false,false}; // puntos, lineas, solido, ajedrez
    
    public:
 

@@ -58,15 +58,9 @@ void Escena::dibujar()
    int modo_dibujado = 0;
 
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
+
 	change_observer();
-    ejes.draw();
-    // COMPLETAR
-    //   Dibujar los diferentes elementos de la escena
-    // Habrá que tener en esta primera práctica una variable que indique qué objeto se ha de visualizar
-    // y hacer 
-    // cubo.draw()
-    // o
-    // tetraedro.draw()
+   ejes.draw();
 
    // seleccion del modo de dibujado
    if(tipo_dibujo==INMEDIATO) modo_dibujado = 1;
@@ -74,9 +68,12 @@ void Escena::dibujar()
    if(tipo_dibujo==DIFERIDO) modo_dibujado = 2;
 
    // Seleccion del objeto a dibujar
-   if(obj == CUBO) cubo->draw(modo_dibujado);
+   if(obj == CUBO) cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    
-   if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado);
+   if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+
+   for(int i=0; i<4; i++)
+      std::cout << "modo_visual[" << i << "]: " << modo_visual[i] << "\t\n";
 }
 
 //**************************************************************************
@@ -132,6 +129,8 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
             if(obj != CUBO){
                printf("Cubo seleccionado.\n");
                obj=CUBO;
+               modo_visual[2] = true;
+               break; 
             }else{
                printf("Ocultando cubo\n");
                obj=VACIO;
@@ -190,15 +189,18 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'P':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != PUNTOS)
+               if (tipo_visual != PUNTOS && !modo_visual[0])
                {
                   printf("Visualizacion en modo PUNTOS activada.\n");
                   tipo_visual = PUNTOS;
+                  modo_visual[0] = true;
+                  break;
                }
                else
                {
                   printf("Visualizacion en modo PUNTOS desactivada.\n");
                   tipo_visual = DEFAULT;
+                  modo_visual[0] = false;
                }
             }
          break;
@@ -207,15 +209,18 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'L':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != LINEAS)
+               if (tipo_visual != LINEAS && !modo_visual[1])
                {
                   printf("Visualizacion en modo LINEAS activada.\n");
                   tipo_visual = LINEAS;
+                  modo_visual[1] = true;
+                  break;
                }
                else
                {
                   printf("Visualizacion en modo LINEAS desactivada.\n");
                   tipo_visual = DEFAULT;
+                  modo_visual[1] = false;
                }
             }
          break;
@@ -224,15 +229,18 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'S':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != SOLIDO)
+               if (tipo_visual != SOLIDO && !modo_visual[2])
                {
                   printf("Visualizacion en modo SOLIDO activada.\n");
                   tipo_visual = SOLIDO;
+                  modo_visual[2] = true;
+                  break;
                }
                else
                {
                   printf("Visualizacion en modo SOLIDO desactivada.\n");
                   tipo_visual = DEFAULT;
+                  modo_visual[2] = false;
                }
             }
          break;
@@ -241,15 +249,18 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'A':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != AJEDREZ)
+               if (tipo_visual != AJEDREZ && !modo_visual[3])
                {
                   printf("Visualizacion en modo AJEDREZ activada.\n");
                   tipo_visual = AJEDREZ;
+                  modo_visual[3] = true;
+                  break;
                }
                else
                {
                   printf("Visualizacion en modo AJEDREZ desactivada.\n");
                   tipo_visual = DEFAULT;
+                  modo_visual[3] = false;
                }
             }
          break;

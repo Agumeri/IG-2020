@@ -72,8 +72,8 @@ void Escena::dibujar()
    
    if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
 
-   for(int i=0; i<4; i++)
-      std::cout << "modo_visual[" << i << "]: " << modo_visual[i] << "\t\n";
+   // for(int i=0; i<4; i++)
+   //    std::cout << "modo_visual[" << i << "]: " << modo_visual[i] << "\t\n";
 }
 
 //**************************************************************************
@@ -129,8 +129,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
             if(obj != CUBO){
                printf("Cubo seleccionado.\n");
                obj=CUBO;
-               modo_visual[2] = true;
-               break; 
             }else{
                printf("Ocultando cubo\n");
                obj=VACIO;

@@ -13,7 +13,7 @@ void Malla3D::draw_ModoAjedrez(){
    f_aux = f;
 
    // Distribuimos los indices de las caras en dos variables
-   for(int i=0; i<f_aux.size()-1; i++){
+   for(int i=0; i<f_aux.size(); i+=2){
       f_a.push_back(f_aux[i]);
       f_b.push_back(f_aux[i+1]);
    }
@@ -38,22 +38,21 @@ void Malla3D::draw_ModoAjedrez(){
 
 // Visualización en modo inmediato con 'glDrawElements'
 
-void Malla3D::draw_ModoInmediato(bool puntos, bool lineas,bool solido)
+void Malla3D::draw_ModoInmediato(std::string color_pintar)
 { 
   // habilitar uso de un array de vertices
   glEnableClientState( GL_VERTEX_ARRAY );
-  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState( GL_COLOR_ARRAY );
 
-  glColorPointer(3, GL_FLOAT, 0, color_lines);
   // indicar el formato y la direccion de memoria del array de vertices
   // (son tuplas de 3 valores float, sin espacio entre ellas)
   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
   
   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
-  if(puntos) glColorPointer(3, GL_FLOAT, 0, color_points);
-  if(lineas) glColorPointer(3, GL_FLOAT, 0, color_lines);
-  if(solido) glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
-  
+  if(color_pintar == "puntos") glColorPointer(3, GL_FLOAT, 0, color_points);
+  else if(color_pintar == "lineas") glColorPointer(3, GL_FLOAT, 0, color_lines);
+  else if(color_pintar == "solido") glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
+
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
   glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());
@@ -83,7 +82,7 @@ GLuint Malla3D::CrearVBO( GLuint tipo_vbo, GLuint tamanio_bytes, GLvoid * punter
 // -----------------------------------------------------------------------------
 // Visualización en modo diferido con 'glDrawElements' (usando VBOs)
 
-void Malla3D::draw_ModoDiferido(bool puntos, bool lineas,bool solido)
+void Malla3D::draw_ModoDiferido(std::string color_pintar)
 {
    // (la primera vez, se deben crear los VBOs y guardar sus identificadores en el objeto)
    // completar (práctica 1)
@@ -109,17 +108,18 @@ void Malla3D::draw_ModoDiferido(bool puntos, bool lineas,bool solido)
    // desactivar VBO de vertices
    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-   // habilitar tabla de vertices
+   // habilitar tabla de vertices y de colores
    glEnableClientState(GL_VERTEX_ARRAY);
+   glEnableClientState(GL_COLOR_ARRAY);
+
+   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
+   if(color_pintar == "puntos") glColorPointer(3, GL_FLOAT, 0, color_points);
+   else if(color_pintar == "lineas") glColorPointer(3, GL_FLOAT, 0, color_lines);
+   else if(color_pintar == "solido") glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
 
    // visualizar triangulos con glDrawElements (puntero a tabla == 0)
    // activar VBO de triangulos
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri);
-
-   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
-  if(puntos) glColorPointer(3, GL_FLOAT, 0, color_points);
-  if(lineas) glColorPointer(3, GL_FLOAT, 0, color_lines);
-  if(solido) glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
 
    // dibujamos los triangulos
    glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
@@ -140,28 +140,39 @@ void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool
 {
    // completar .....(práctica 1)
    glEnable(GL_CULL_FACE);
+   color_pintar = "solido";
 
-   if(puntos){
+   // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
+   // solido y ajedrez serán independientes, mientras este ajedrez, no se podran ver los otros 3
+   if (puntos){
       glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
       // hacemos que los puntos sean mas grandes y aumentamos su tamaño para que sean visibles
       glEnable(GL_PROGRAM_POINT_SIZE);
       glPointSize(3);
+      color_pintar = "puntos";
+      if(modo_dibujado == 1) this->draw_ModoInmediato(color_pintar);
+      else if(modo_dibujado == 2) this->draw_ModoDiferido(color_pintar);
    }
-   
-   if(lineas)
+
+   if (lineas){
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-   
-   if(solido){
-      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      color_pintar = "lineas";
+      if(modo_dibujado == 1) this->draw_ModoInmediato(color_pintar);
+      else if(modo_dibujado == 2) this->draw_ModoDiferido(color_pintar);
    }
-   // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
-   // solido y ajedrez serán independientes, mientras este ajedrez, no se podran ver los otros 3
-   if(modo_dibujado == 1)
-      this->draw_ModoInmediato(puntos, lineas, solido);
-   else if(modo_dibujado == 2)
-      this->draw_ModoDiferido(puntos, lineas, solido);
+
+   if (solido){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      color_pintar = "solido";
+      if(modo_dibujado == 1) this->draw_ModoInmediato(color_pintar);
+      else if(modo_dibujado == 2) this->draw_ModoDiferido(color_pintar);
+   }
    
-   if(ajedrez)
-      this->draw_ModoAjedrez();
+   if(ajedrez) this->draw_ModoAjedrez();
 }
 
+// void Malla3D::inicializarColores(){
+//    for(int i=0; i<v.size(); i++){
+//       colores[i] = {1.0, 0.5, 0.0};
+//    }
+// }

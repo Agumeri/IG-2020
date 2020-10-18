@@ -46,7 +46,7 @@ class Escena
    Tetraedro * tetraedro= nullptr ; // es importante inicializarlo a 'nullptr'
 
     //Array para comprobar que modos de visualizacion esta activado
-    bool modo_visual[4] = {false,false,false,false}; // puntos, lineas, solido, ajedrez
+    bool modo_visual[4] = {false,false,true,false}; // puntos, lineas, solido, ajedrez
    
    public:
 

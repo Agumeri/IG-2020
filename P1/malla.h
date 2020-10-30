@@ -21,8 +21,11 @@
 class Malla3D
 {
    public:
-   // dibuja el objeto en modo ajedre
-   void draw_ModoAjedrez();
+   // dibuja el objeto en modo ajedrez(inmediato)
+   void draw_ModoAjedrezInmediato();
+
+   // dibuja el objeto en modo ajedrez(diferido)
+   void draw_ModoAjedrezDiferido();
 
    // dibuja el objeto en modo inmediato
    void draw_ModoInmediato(std::string color_pintar);
@@ -38,73 +41,24 @@ class Malla3D
    // o bien a 'draw_ModoDiferido' (modo diferido, VBOs)
    void draw(int modo_dibujado, bool puntos, bool lineas, bool solido, bool ajedrez);
 
-   // void inicializarColores();
+   void inicializarColores();
 protected:
 
    void calcular_normales() ; // calcula tabla de normales de vértices (práctica 3)
    std::string color_pintar = "";
    
+   std::vector<Tupla3f> c_inm, c_dif, c_line, c_point; // tabla de colores de los vertices
    std::vector<Tupla3f> v;   // tabla de coordenadas de vértices (una tupla por vértice, con tres floats)
-   std::vector<Tupla3i> f ; // una terna de 3 enteros por cada cara o triángulo
+   std::vector<Tupla3i> f; // una terna de 3 enteros por cada cara o triángulo
    
+   GLuint id_vbo_ver   = 0,
+          id_vbo_tri   = 0,
+          id_vbo_color_dif = 0,
+          id_vbo_color_point = 0,
+          id_vbo_color_line  = 0,
+          id_vbo_color_chess_a = 0,
+          id_vbo_color_chess_b = 0;
 
-   // completar: tabla de colores, tabla de normales de vértices
-   private:
-      GLuint id_vbo_ver = 0;
-      GLuint id_vbo_tri = 0;
-
-      // std::vector<Tupla3f> color_solid_inm, color_solid_dif, color_lines, color_points;
-
-      // tablas de colores
-         // solido inmediato
-         GLfloat color_solid_inm[24] = {
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-            1.0, 0.5, 0.0,
-         };
-
-         // solido modo diferido 
-         GLfloat color_solid_dif[24] = {
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-         };
-
-         // lineas
-         GLfloat color_lines[24] = {
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-         };
-
-         // puntos
-         GLfloat color_points[24] = {
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-            0.0, 1.0, 1.0,
-         };
-
-      //***************************************************
 } ;
 
 

@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 // Visualizacion en modo ajedrez 
-void Malla3D::draw_ModoAjedrez(){
+void Malla3D::draw_ModoAjedrezInmediato(){
    // Utilizamos auxiliares para pintar las caras impares y pares
    std::vector<Tupla3i> f_aux, f_a, f_b;
    f_aux = f;
@@ -21,14 +21,68 @@ void Malla3D::draw_ModoAjedrez(){
    glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_COLOR_ARRAY);
 
-   glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
+   glColorPointer(3, GL_FLOAT, 0, c_inm.data());
    glVertexPointer( 3, GL_FLOAT, 0, v.data() );
    glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
 
-   glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
+   glColorPointer(3, GL_FLOAT, 0, c_dif.data());
    glVertexPointer( 3, GL_FLOAT, 0, v.data() );
    glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
 
+   // deshabilitar array de vertices
+   glDisableClientState( GL_VERTEX_ARRAY );
+   glDisableClientState( GL_COLOR_ARRAY );
+}
+
+// modificar a ajedrez diferido y hacer ajedrez inmediato
+void Malla3D::draw_ModoAjedrezDiferido(){
+   // Utilizamos auxiliares para pintar las caras impares y pares
+   std::vector<Tupla3i> f_aux, f_a, f_b;
+   f_aux = f;
+
+   // Distribuimos los indices de las caras en dos variables
+   for(int i=0; i<f_aux.size(); i+=2){
+      f_a.push_back(f_aux[i]);
+      f_b.push_back(f_aux[i+1]);
+   }
+
+   glEnableClientState(GL_VERTEX_ARRAY);
+   glEnableClientState(GL_COLOR_ARRAY);
+
+   // habilitamos vbo de color para colorear
+   if (id_vbo_color_chess_a == 0 && id_vbo_color_chess_b == 0){
+      id_vbo_color_chess_a = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_inm.size(), c_inm.data());
+      id_vbo_color_chess_b = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_dif.size(), c_dif.data());
+   } 
+
+   // Activamos los VBO de caras pares e impares
+   // una vez hecho, nos ponemos a colorear los triangulos, primero los pares (f_a) y luego los impares (f_b)
+   //
+      // activar VBO de color para caras pares
+      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_chess_a);
+
+      // Inicializamos el color a pintar de los vertices a 0 (no apuntaría a ninguna tabla de color)   
+      glColorPointer(3, GL_FLOAT, 0, 0);
+
+      // desactivar VBO de color
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+      glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+      glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
+   //
+      // activar VBO de color para caras impares
+      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_chess_b);
+
+      // Inicializamos el color a pintar de los vertices a 0 (no apuntaría a ninguna tabla de color)   
+      glColorPointer(3, GL_FLOAT, 0, 0);
+
+      // desactivar VBO de color
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+      glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+      glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
+   //
+   
    // deshabilitar array de vertices
    glDisableClientState( GL_VERTEX_ARRAY );
    glDisableClientState( GL_COLOR_ARRAY );
@@ -37,7 +91,6 @@ void Malla3D::draw_ModoAjedrez(){
 
 
 // Visualización en modo inmediato con 'glDrawElements'
-
 void Malla3D::draw_ModoInmediato(std::string color_pintar)
 { 
   // habilitar uso de un array de vertices
@@ -49,9 +102,9 @@ void Malla3D::draw_ModoInmediato(std::string color_pintar)
   glVertexPointer( 3, GL_FLOAT, 0, v.data() );
   
   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
-  if(color_pintar == "puntos") glColorPointer(3, GL_FLOAT, 0, color_points);
-  else if(color_pintar == "lineas") glColorPointer(3, GL_FLOAT, 0, color_lines);
-  else if(color_pintar == "solido") glColorPointer(3, GL_FLOAT, 0, color_solid_inm);
+  if(color_pintar == "puntos") glColorPointer(3, GL_FLOAT, 0, c_point.data());
+  else if(color_pintar == "lineas") glColorPointer(3, GL_FLOAT, 0, c_line.data());
+  else if(color_pintar == "solido") glColorPointer(3, GL_FLOAT, 0, c_inm.data());
 
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
@@ -87,17 +140,19 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
    // (la primera vez, se deben crear los VBOs y guardar sus identificadores en el objeto)
    // completar (práctica 1)
    // .....
-   
 
    // creamos los identificadores del VBO para las caras y para los vertices
-   if (id_vbo_ver == 0 && id_vbo_tri == 0)
+   if (id_vbo_ver == 0 && id_vbo_tri == 0 && id_vbo_color_point == 0 && id_vbo_color_line == 0 && id_vbo_color_dif == 0)
    {
       id_vbo_ver = CrearVBO(GL_ARRAY_BUFFER,3*sizeof(float) * v.size(), v.data());       // id para los vertices
       id_vbo_tri = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f.size(), f.data()); // id para las caras
+      id_vbo_color_point = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_point.size(), c_point.data());
+      id_vbo_color_line = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_line.size(), c_line.data());
+      id_vbo_color_dif = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_dif.size(), c_dif.data());
    }
 
    // una vez creados, procedemos a visualizar la malla
-   
+
    //especificar localización y formato de la tabla de vértices, habilitar tabla
    // activar VBO de vertices
    glBindBuffer(GL_ARRAY_BUFFER, id_vbo_ver);
@@ -107,16 +162,27 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
 
    // desactivar VBO de vertices
    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+  
    // habilitar tabla de vertices y de colores
    glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_COLOR_ARRAY);
 
-   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
-   if(color_pintar == "puntos") glColorPointer(3, GL_FLOAT, 0, color_points);
-   else if(color_pintar == "lineas") glColorPointer(3, GL_FLOAT, 0, color_lines);
-   else if(color_pintar == "solido") glColorPointer(3, GL_FLOAT, 0, color_solid_dif);
 
+   // indicamos el color con el que se van a pintar las caras (dependiendo de que modo se ha cogido)
+
+   // ACTIVAMOS LOS VBO DE LAS TABLAS DE COLOR
+   //
+      if(color_pintar == "puntos") glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_point);
+      else if(color_pintar == "lineas") glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_line);
+      else if(color_pintar == "solido") glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_dif);
+
+      // Inicializamos el color a pintar de los vertices a 0 (no apuntaría a ninguna tabla de color)   
+      glColorPointer(3, GL_FLOAT, 0, 0);
+
+      // desactivar VBO de color
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+   //
+   
    // visualizar triangulos con glDrawElements (puntero a tabla == 0)
    // activar VBO de triangulos
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri);
@@ -140,6 +206,7 @@ void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool
 {
    // completar .....(práctica 1)
    glEnable(GL_CULL_FACE);
+   this->inicializarColores();
    color_pintar = "solido";
 
    // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
@@ -168,11 +235,26 @@ void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool
       else if(modo_dibujado == 2) this->draw_ModoDiferido(color_pintar);
    }
    
-   if(ajedrez) this->draw_ModoAjedrez();
+   if(!puntos && !lineas && !solido && ajedrez){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      if(modo_dibujado == 1) this->draw_ModoAjedrezInmediato();
+      else if(modo_dibujado == 2) this->draw_ModoAjedrezDiferido();
+      
+   } 
 }
 
-// void Malla3D::inicializarColores(){
-//    for(int i=0; i<v.size(); i++){
-//       colores[i] = {1.0, 0.5, 0.0};
-//    }
-// }
+void Malla3D::inicializarColores(){
+   // establecemos el tamaño de cada tabla de color según el número de vértices
+   c_inm.resize(v.size());
+   c_dif.resize(v.size());
+   c_line.resize(v.size());
+   c_point.resize(v.size());
+
+   // asignamos los valores a cada tabla
+   for(int i=0; i<v.size(); i++){
+      c_inm[i] = {1.0, 0.5, 0.0};
+      c_dif[i] = {1.0, 0.0, 1.0};
+      c_line[i] = {0.0, 0.0, 0.0};
+      c_point[i] = {0.0, 1.0, 1.0};
+   }
+}

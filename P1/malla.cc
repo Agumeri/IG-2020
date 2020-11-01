@@ -49,11 +49,25 @@ void Malla3D::draw_ModoAjedrezDiferido(){
    glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_COLOR_ARRAY);
 
-   // habilitamos vbo de color para colorear
-   if (id_vbo_color_chess_a == 0 && id_vbo_color_chess_b == 0){
+   // habilitamos vbo de color para colorear y el de las caras y vertices
+   if (id_vbo_color_chess_a == 0 && id_vbo_color_chess_b == 0 && id_vbo_ver == 0 && id_vbo_tri_a == 0 && id_vbo_tri_b == 0){
+      id_vbo_ver = CrearVBO(GL_ARRAY_BUFFER,3*sizeof(float) * v.size(), v.data());       // id para los vertices
+      id_vbo_tri_a = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f_a.size(), f_a.data()); // id para las caras
+      id_vbo_tri_b = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f_b.size(), f_b.data()); // id para las caras
       id_vbo_color_chess_a = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_inm.size(), c_inm.data());
       id_vbo_color_chess_b = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_dif.size(), c_dif.data());
    } 
+
+   // activamos los VBO de los vertices
+      // activar VBO de vertices
+      glBindBuffer(GL_ARRAY_BUFFER, id_vbo_ver);
+
+      // especifica formato y ofsset (=0)
+      glVertexPointer(3, GL_FLOAT, 0, 0);
+
+      // desactivar VBO de vertices
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+   //
 
    // Activamos los VBO de caras pares e impares
    // una vez hecho, nos ponemos a colorear los triangulos, primero los pares (f_a) y luego los impares (f_b)
@@ -67,8 +81,19 @@ void Malla3D::draw_ModoAjedrezDiferido(){
       // desactivar VBO de color
       glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-      glVertexPointer( 3, GL_FLOAT, 0, v.data() );
-      glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
+      //Activamos el VBO de triangulos (pares)
+         // activar VBO de triangulos
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri_a);
+
+         // dibujamos los triangulos
+         glDrawElements(GL_TRIANGLES, 3*f_a.size(), GL_UNSIGNED_INT, 0);
+
+         // desactivar VBO de triangulos
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      //
+      
+      // glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+      // glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
    //
       // activar VBO de color para caras impares
       glBindBuffer(GL_ARRAY_BUFFER, id_vbo_color_chess_b);
@@ -79,10 +104,21 @@ void Malla3D::draw_ModoAjedrezDiferido(){
       // desactivar VBO de color
       glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-      glVertexPointer( 3, GL_FLOAT, 0, v.data() );
-      glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
+      //Activamos el VBO de triangulos (pares)
+         // activar VBO de triangulos
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri_b);
+
+         // dibujamos los triangulos
+         glDrawElements(GL_TRIANGLES, 3*f_b.size(), GL_UNSIGNED_INT, 0);
+
+         // desactivar VBO de triangulos
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      //
+
+      // glVertexPointer( 3, GL_FLOAT, 0, v.data() );
+      // glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
    //
-   
+
    // deshabilitar array de vertices
    glDisableClientState( GL_VERTEX_ARRAY );
    glDisableClientState( GL_COLOR_ARRAY );

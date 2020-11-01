@@ -57,7 +57,8 @@ protected:
           id_vbo_color_point = 0,
           id_vbo_color_line  = 0,
           id_vbo_color_chess_a = 0,
-          id_vbo_color_chess_b = 0;
+          id_vbo_color_chess_b = 0,
+          id_vbo_tri_a = 0, id_vbo_tri_b = 0;
 
 } ;
 

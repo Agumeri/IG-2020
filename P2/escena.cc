@@ -21,7 +21,8 @@ Escena::Escena()
     // ..... CREAR DATOS, NO LA ESTRUCTURA DE LA ESCENA.
     cubo = new Cubo();
     tetraedro = new Tetraedro();
-
+    obj_ply = new ObjPLY("plys/ant.ply");
+    peon = new ObjRevolucion("plys/peon.ply",10,false,false);
 }
 
 //**************************************************************************
@@ -71,9 +72,9 @@ void Escena::dibujar()
    if(obj == CUBO) cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    
    if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-
-   // for(int i=0; i<4; i++)
-   //    std::cout << "modo_visual[" << i << "]: " << modo_visual[i] << "\t\n";
+   
+   //Distintos casos segun el objeto PLY
+   if(obj == OBJPLY) obj_ply->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
 }
 
 //**************************************************************************
@@ -106,7 +107,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'O' :
          // ESTAMOS EN MODO SELECCION DE OBJETO
          modoMenu=SELOBJETO; 
-         printf("Opciones disponibles: \n'C': Cubo; \n'T': Tetraedro \n");
+         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'H': Objeto PLY \n");
          break ;
         case 'V' :
          // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
@@ -146,6 +147,21 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                obj=TETRAEDRO;
             }else{
                printf("Ocultando Tetraedro\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO PLY
+         case 'H':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != OBJPLY){
+               printf("Objeto PLY seleccionado.\n");
+               obj=OBJPLY;
+            }else{
+               printf("Ocultando objeto PLY\n");
                obj=VACIO;
             }
          }
@@ -262,7 +278,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                }
             }
          break;
-
       //**************************************************************************
    }
    

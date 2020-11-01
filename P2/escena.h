@@ -3,11 +3,13 @@
 
 #include "ejes.h"
 #include "malla.h"
+#include "objply.h"
+#include "objrevolucion.h"
 #include "cubo.h"
 #include "tetraedro.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO} menu;
-typedef enum {VACIO, CUBO, TETRAEDRO} objetos;
+typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY} objetos;
 typedef enum {INMEDIATO, DIFERIDO} dibujado;
 typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ} visualizado;
 
@@ -43,7 +45,11 @@ class Escena
    // Objetos de la escena
    Ejes ejes;
    Cubo * cubo = nullptr ; // es importante inicializarlo a 'nullptr'
-   Tetraedro * tetraedro= nullptr ; // es importante inicializarlo a 'nullptr'
+   Tetraedro * tetraedro = nullptr ; // es importante inicializarlo a 'nullptr'
+   // objetos PLY
+    ObjPLY * obj_ply = nullptr; // creamos un objeto para poder dibujar los objetos ply
+   //
+   ObjRevolucion * peon = nullptr;
 
     //Array para comprobar que modos de visualizacion esta activado
     bool modo_visual[4] = {false,false,true,false}; // puntos, lineas, solido, ajedrez

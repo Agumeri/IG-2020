@@ -51,11 +51,12 @@ protected:
    std::vector<Tupla3f> v;   // tabla de coordenadas de vértices (una tupla por vértice, con tres floats)
    std::vector<Tupla3i> f; // una terna de 3 enteros por cada cara o triángulo
    
-   GLuint id_vbo_ver   = 0,
+   GLuint id_vbo_ver   = 0, 
           id_vbo_tri   = 0,
           id_vbo_color_dif = 0,
           id_vbo_color_point = 0,
           id_vbo_color_line  = 0,
+          id_vbo_ver_chess = 0,
           id_vbo_color_chess_a = 0,
           id_vbo_color_chess_b = 0,
           id_vbo_tri_a = 0, id_vbo_tri_b = 0;

@@ -22,7 +22,7 @@ Escena::Escena()
     cubo = new Cubo();
     tetraedro = new Tetraedro();
     obj_ply = new ObjPLY("plys/ant.ply");
-    peon = new ObjRevolucion("plys/peon.ply",10,false,false);
+    peon = new ObjRevolucion("plys/lata-psup.ply",10,false,false);
 }
 
 //**************************************************************************
@@ -74,9 +74,11 @@ void Escena::dibujar()
    if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    
    //Distintos casos segun el objeto PLY
-   if(obj == OBJPLY) obj_ply->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   if(obj == OBJPLY) {
+      glScalef(100,100,100);
+      peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   }
 }
-
 //**************************************************************************
 //
 // función que se invoca cuando se pulsa una tecla

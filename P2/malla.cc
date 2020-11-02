@@ -50,7 +50,7 @@ void Malla3D::draw_ModoAjedrezDiferido(){
    glEnableClientState(GL_COLOR_ARRAY);
 
    // habilitamos vbo de color para colorear y el de las caras y vertices
-   if (id_vbo_color_chess_a == 0 && id_vbo_color_chess_b == 0 && id_vbo_ver == 0 && id_vbo_tri_a == 0 && id_vbo_tri_b == 0){
+   if (id_vbo_color_chess_a == 0 && id_vbo_color_chess_b == 0 && id_vbo_ver_chess == 0 && id_vbo_tri_a == 0 && id_vbo_tri_b == 0){
       id_vbo_ver_chess = CrearVBO(GL_ARRAY_BUFFER,3*sizeof(float) * v.size(), v.data());       // id para los vertices
       id_vbo_tri_a = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f_a.size(), f_a.data()); // id para las caras
       id_vbo_tri_b = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f_b.size(), f_b.data()); // id para las caras
@@ -139,7 +139,7 @@ void Malla3D::draw_ModoInmediato(std::string color_pintar)
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
   glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());
-
+   // std::cout << "HOLA NO ME HE ROTO" << std::endl;
   // deshabilitar array de vertices y el color
   glDisableClientState( GL_VERTEX_ARRAY );
   glDisableClientState( GL_COLOR_ARRAY );
@@ -235,7 +235,7 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
 void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool ajedrez)
 {
    // completar .....(práctica 1)
-   glEnable(GL_CULL_FACE);
+   // glEnable(GL_CULL_FACE);
    this->inicializarColores();
    color_pintar = "solido";
 

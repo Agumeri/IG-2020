@@ -7,6 +7,9 @@
 #include "objrevolucion.h"
 #include "cubo.h"
 #include "tetraedro.h"
+#include "cono.h"
+#include "cilindro.h"
+#include "esfera.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO} menu;
 typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY} objetos;
@@ -50,6 +53,13 @@ class Escena
     ObjPLY * obj_ply = nullptr; // creamos un objeto para poder dibujar los objetos ply
    //
    ObjRevolucion * peon = nullptr;
+   ObjRevolucion * lata_inf = nullptr;
+   ObjRevolucion * lata_sup = nullptr;
+   ObjRevolucion * lata_cue = nullptr;
+
+   Cono * cono = nullptr;
+   Cilindro * cilindro = nullptr;
+   Esfera * esfera = nullptr;
 
     //Array para comprobar que modos de visualizacion esta activado
     bool modo_visual[4] = {false,false,true,false}; // puntos, lineas, solido, ajedrez

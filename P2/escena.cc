@@ -21,8 +21,18 @@ Escena::Escena()
     // ..... CREAR DATOS, NO LA ESTRUCTURA DE LA ESCENA.
     cubo = new Cubo();
     tetraedro = new Tetraedro();
-    obj_ply = new ObjPLY("plys/ant.ply");
-    peon = new ObjRevolucion("plys/lata-psup.ply",10,false,false);
+    
+    // objetos de revolución
+    cono = new Cono();
+    cilindro = new Cilindro();
+    esfera = new Esfera();
+
+    // objetos que cargan archivos ply
+   //  obj_ply = new ObjPLY("plys/ant.ply");
+   //  peon = new ObjRevolucion("plys/peon.ply",10,true,true);
+   //  lata_cue = new ObjRevolucion("plys/lata-pcue.ply",10,true,true);
+   //  lata_inf = new ObjRevolucion("plys/lata-pinf.ply",10,true,true);
+   //  lata_sup = new ObjRevolucion("plys/lata-psup.ply",10,true,true);
 }
 
 //**************************************************************************
@@ -75,8 +85,20 @@ void Escena::dibujar()
    
    //Distintos casos segun el objeto PLY
    if(obj == OBJPLY) {
-      glScalef(100,100,100);
-      peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glScalef(40,40,40);  // usar para objetos de revolución
+      // peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      
+      // si hay cono
+      cono->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   
+      // si hay cilindro
+      // cilindro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+
+      // si hay esfera
+      // esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    }
 }
 //**************************************************************************

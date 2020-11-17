@@ -11,8 +11,8 @@
 #include "cilindro.h"
 #include "esfera.h"
 
-typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO} menu;
-typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY} objetos;
+typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO, TAPASEJECUCION} menu;
+typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS} objetos;
 typedef enum {INMEDIATO, DIFERIDO} dibujado;
 typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ} visualizado;
 
@@ -63,7 +63,11 @@ class Escena
 
     //Array para comprobar que modos de visualizacion esta activado
     bool modo_visual[4] = {false,false,true,false}; // puntos, lineas, solido, ajedrez
-   
+
+    // Booleanos para las tapas
+    bool tapas = true;
+
+    
    public:
 
     Escena();

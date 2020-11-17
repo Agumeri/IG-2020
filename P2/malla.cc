@@ -13,7 +13,7 @@ void Malla3D::draw_ModoAjedrezInmediato(){
    f_aux = f;
 
    // Distribuimos los indices de las caras en dos variables
-   for(int i=0; i<f_aux.size(); i+=2){
+   for(int i=0; i<tam_f; i+=2){
       f_a.push_back(f_aux[i]);
       f_b.push_back(f_aux[i+1]);
    }
@@ -23,11 +23,11 @@ void Malla3D::draw_ModoAjedrezInmediato(){
 
    glColorPointer(3, GL_FLOAT, 0, c_inm.data());
    glVertexPointer( 3, GL_FLOAT, 0, v.data() );
-   glDrawElements( GL_TRIANGLES, f_a.size()*3, GL_UNSIGNED_INT, f_a.data());
+   glDrawElements( GL_TRIANGLES, (f_a.size())*3, GL_UNSIGNED_INT, f_a.data());
 
    glColorPointer(3, GL_FLOAT, 0, c_dif.data());
    glVertexPointer( 3, GL_FLOAT, 0, v.data() );
-   glDrawElements( GL_TRIANGLES, f_b.size()*3, GL_UNSIGNED_INT, f_b.data());
+   glDrawElements( GL_TRIANGLES, (f_b.size())*3, GL_UNSIGNED_INT, f_b.data());
 
    // deshabilitar array de vertices
    glDisableClientState( GL_VERTEX_ARRAY );
@@ -41,7 +41,7 @@ void Malla3D::draw_ModoAjedrezDiferido(){
    f_aux = f;
 
    // Distribuimos los indices de las caras en dos variables
-   for(int i=0; i<f_aux.size(); i+=2){
+   for(int i=0; i<tam_f; i+=2){
       f_a.push_back(f_aux[i]);
       f_b.push_back(f_aux[i+1]);
    }
@@ -138,7 +138,10 @@ void Malla3D::draw_ModoInmediato(std::string color_pintar)
 
   // visualizar, indicando: tipo de primitiva, numero de indices,
   // tipo de los indices, y direccion de la tabla de indices
-  glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());
+
+  // si fuese objeto revolucion, M tiene que ser hasta SIN TAPAS o M + tapas
+//   glDrawElements( GL_TRIANGLES, f.size()*3, GL_UNSIGNED_INT, f.data());
+  glDrawElements( GL_TRIANGLES, tam_f*3, GL_UNSIGNED_INT, f.data());
    // std::cout << "HOLA NO ME HE ROTO" << std::endl;
   // deshabilitar array de vertices y el color
   glDisableClientState( GL_VERTEX_ARRAY );
@@ -175,7 +178,7 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
    if (id_vbo_ver == 0 && id_vbo_tri == 0 && id_vbo_color_point == 0 && id_vbo_color_line == 0 && id_vbo_color_dif == 0)
    {
       id_vbo_ver = CrearVBO(GL_ARRAY_BUFFER,3*sizeof(float) * v.size(), v.data());       // id para los vertices
-      id_vbo_tri = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * f.size(), f.data()); // id para las caras
+      id_vbo_tri = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int) * tam_f, f.data()); // id para las caras
       id_vbo_color_point = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_point.size(), c_point.data());
       id_vbo_color_line = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_line.size(), c_line.data());
       id_vbo_color_dif = CrearVBO(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(float) * c_dif.size(), c_dif.data());
@@ -218,7 +221,7 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_vbo_tri);
 
    // dibujamos los triangulos
-   glDrawElements(GL_TRIANGLES, 3*f.size(), GL_UNSIGNED_INT, 0);
+   glDrawElements(GL_TRIANGLES, 3*tam_f, GL_UNSIGNED_INT, 0);
 
    // desactivar VBO de triangulos
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -235,7 +238,7 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
 void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool ajedrez)
 {
    // completar .....(práctica 1)
-   // glEnable(GL_CULL_FACE);
+   glEnable(GL_CULL_FACE);
    this->inicializarColores();
    color_pintar = "solido";
 

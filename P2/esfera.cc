@@ -4,7 +4,7 @@
 #include "esfera.h"
 
 
-Esfera::Esfera(int num_vert_perfil, int num_instancias_perf, float r){
+Esfera::Esfera(int num_vert_perfil, int num_instancias_perf, float r, bool tsup, bool tinf){
     // establecemos el valor del radio
     this->radio = r;
 
@@ -14,16 +14,15 @@ Esfera::Esfera(int num_vert_perfil, int num_instancias_perf, float r){
     // Pasamos a crear los vertices del perfil. Como lo hemos orientado para que el objeto se cree de 
     // abajo hacia arriba, primero pondremos el vertice inferior, luego el resto de vertices
     // hasta llegar al último, el vértice superior (todo mediante un for)
-    // tabla_vertices_aux.push_back( {0.0,-radio,0.0} );
+    float x, y;
 
     for(int i=1; i<num_vert_perfil; i++){
-        tabla_vertices_aux.push_back( {sin(2*i*M_PI/num_instancias_perf)*radio,   // posicion x
-                                       cos(2*i*M_PI/num_instancias_perf)*radio,   // posicion y
-                                       0.0} );                                  // posicion z
+        x = sin(2.0*i*M_PI/num_instancias_perf)*radio;
+        y = cos(2.0*i*M_PI/num_instancias_perf)*radio;
+        tabla_vertices_aux.push_back( {x,-y,0.0} ); 
     }
 
-    // tabla_vertices_aux.push_back( {0,radio,0.0} );
 
     // crear malla del cono
-    crearMalla(tabla_vertices_aux,num_instancias_perf,true,true);
+    crearMalla(tabla_vertices_aux,num_instancias_perf,tsup,tinf);
 }

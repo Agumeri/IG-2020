@@ -53,4 +53,5 @@ Cubo::Cubo(float lado)
    f[10] = {7, 4, 1};
    f[11] = {0, 7, 1};
 
+   tam_f = f.size();
 }

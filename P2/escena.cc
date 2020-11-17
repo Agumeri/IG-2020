@@ -23,16 +23,18 @@ Escena::Escena()
     tetraedro = new Tetraedro();
     
     // objetos de revolución
-    cono = new Cono();
-    cilindro = new Cilindro();
-    esfera = new Esfera();
+      cono = new Cono(2,20,80,40,true,false);
+      esfera = new Esfera(10,20,40,true,false);
+      cilindro = new Cilindro(2,20,80,40,true,true);
+    
 
     // objetos que cargan archivos ply
-   //  obj_ply = new ObjPLY("plys/ant.ply");
-   //  peon = new ObjRevolucion("plys/peon.ply",10,true,true);
-   //  lata_cue = new ObjRevolucion("plys/lata-pcue.ply",10,true,true);
-   //  lata_inf = new ObjRevolucion("plys/lata-pinf.ply",10,true,true);
-   //  lata_sup = new ObjRevolucion("plys/lata-psup.ply",10,true,true);
+      obj_ply = new ObjPLY("plys/big_dodge.ply");  // Este objeto sirve para cargar los 3 primeros archivos
+      peon = new ObjRevolucion("plys/peon.ply",10,true,true); 
+      lata_cue = new ObjRevolucion("plys/lata-pcue.ply",10,true,true);
+      lata_inf = new ObjRevolucion("plys/lata-pinf.ply",10,true,true);
+      lata_sup = new ObjRevolucion("plys/lata-psup.ply",10,true,true);
+    //
 }
 
 //**************************************************************************
@@ -78,27 +80,92 @@ void Escena::dibujar()
    
    if(tipo_dibujo==DIFERIDO) modo_dibujado = 2;
 
-   // Seleccion del objeto a dibujar
-   if(obj == CUBO) cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    
-   if(obj == TETRAEDRO) tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   // Seleccion del objeto a dibujar
+   if(obj == CUBO){
+      cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   } 
+   
+   if(obj == TETRAEDRO){  
+      tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   } 
    
    //Distintos casos segun el objeto PLY
    if(obj == OBJPLY) {
-      glScalef(40,40,40);  // usar para objetos de revolución
-      // peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      
-      // si hay cono
-      cono->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-   
-      // si hay cilindro
-      // cilindro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glScalef(5,5,5);
+      obj_ply->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   }
 
-      // si hay esfera
-      // esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   if(obj == PEON) {
+      glScalef(40,40,40);
+      peon->VerTapas();
+      peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   }
+
+   if(obj == LATA){
+      glScalef(40,40,40);
+      lata_cue->VerTapas(tapas);
+      lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      lata_inf->VerTapas(tapas);
+      lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      lata_sup->VerTapas(tapas);
+      lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   }
+   
+   if(obj == CONO){
+      cono->VerTapas(tapas);
+      cono->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   }
+
+   if(obj == CILINDRO){
+      cilindro->VerTapas(tapas);
+      cilindro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+
+   }
+
+   if(obj == ESFERA){
+      esfera->VerTapas(tapas);
+      esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+
+   }
+
+   // Se van a imprimir 5 figuras: cubo tetraedro cono cilindro y esfera
+   if(obj == OBJSIMULTANEOS){
+      glMatrixMode(GL_MODELVIEW);
+
+      // cubo
+      glPushMatrix();
+         glTranslatef(-200,0,0);
+         cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      // tetraedro
+      glPushMatrix();
+         glTranslatef(-100,0,0);
+         tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      // cono
+      glPushMatrix();
+         // glScalef(40,40,40);
+         glTranslatef(0,0,0);
+         cono->VerTapas(tapas);
+         cono->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      // cilindro
+      glPushMatrix();
+         glTranslatef(100,0,0);
+         cilindro->VerTapas(tapas);
+         cilindro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      // esfera
+      glPushMatrix();
+         glTranslatef(200,0,0);
+         esfera->VerTapas(tapas);
+         esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
    }
 }
 //**************************************************************************
@@ -123,6 +190,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
             printf("'O': Seleccion de objeto\n");
             printf("'V': Seleccion de modo de visualización\n");
             printf("'D': Seleccion de dibujado\n");
+            printf("'Z': Seleccionar tapas a dibujar\n");      
             printf("'Q': Salir del programa\n");       
          }else {
             salir=true ;
@@ -131,7 +199,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'O' :
          // ESTAMOS EN MODO SELECCION DE OBJETO
          modoMenu=SELOBJETO; 
-         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'H': Objeto PLY \n");
+         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'Y': ObjetoPLY \n'H': Peon \n'I': Lata \n'J': Cono \n'B': Cilindro \n'N': Esfera \n'M': OBJETOS SIMULTANEOS \n");
          break ;
         case 'V' :
          // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
@@ -142,6 +210,10 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          // ESTAMOS EN MODO SELECCION DE DIBUJADO
          printf("Opciones disponibles: \n'1': Modo inmediato; \n'2': Modo diferido\n");
          modoMenu=SELDIBUJADO;
+         break ;
+       case 'Z' :
+         printf("Opciones disponibles: \n'8': Activar/Desactivar tapas\n");
+         modoMenu=TAPASEJECUCION;
          break ;
          // COMPLETAR con los diferentes opciones de teclado
       
@@ -178,7 +250,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
 
          //-------------------------------------------------
          //OBJETO PLY
-         case 'H':
+         case 'Y':
          // ESTAMOS EN MODO Tetraedro SELECCIONADO
          if(modoMenu==SELOBJETO){
             if(obj != OBJPLY){
@@ -186,6 +258,96 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                obj=OBJPLY;
             }else{
                printf("Ocultando objeto PLY\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO PLY "PEON"
+         case 'H':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != PEON){
+               printf("Objeto PLY 'PEON' seleccionado.\n");
+               obj=PEON;
+            }else{
+               printf("Ocultando objeto PLY 'PEON'\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO PLY "LATA"
+         case 'I':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != LATA){
+               printf("Objeto PLY 'LATA' seleccionado.\n");
+               obj=LATA;
+            }else{
+               printf("Ocultando objeto 'LATA' PLY\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO REVOLUCIÓN "CONO"
+         case 'J':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != CONO){
+               printf("Cono seleccionado.\n");
+               obj=CONO;
+            }else{
+               printf("Ocultando cono\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO REVOLUCIÓN "CILINDRO"
+         case 'B':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != CILINDRO){
+               printf("Cilindro seleccionado.\n");
+               obj=CILINDRO;
+            }else{
+               printf("Ocultando Cilindro\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETO REVOLUCIÓN "ESFERA"
+         case 'N':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != ESFERA){
+               printf("Esfera seleccionado.\n");
+               obj=ESFERA;
+            }else{
+               printf("Ocultando Esfera\n");
+               obj=VACIO;
+            }
+         }
+         break;
+
+         //-------------------------------------------------
+         //OBJETOs SIMULTANEOS EN LA ESCENA
+         case 'M':
+         // ESTAMOS EN MODO Tetraedro SELECCIONADO
+         if(modoMenu==SELOBJETO){
+            if(obj != OBJSIMULTANEOS){
+               printf("Objetos simultaneos en la escena seleccionado.\n");
+               obj=OBJSIMULTANEOS;
+            }else{
+               printf("Ocultando objetos simultaneos\n");
                obj=VACIO;
             }
          }
@@ -299,6 +461,22 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                   printf("Visualizacion en modo AJEDREZ desactivada.\n");
                   tipo_visual = DEFAULT;
                   modo_visual[3] = false;
+               }
+            }
+         break;
+      //**************************************************************************
+
+      // MENU DEL MODO DE VISUALIZACIÓN DE TAPAS
+         case '8':
+            if (modoMenu == TAPASEJECUCION)
+            {
+               if (tapas)
+               {
+                  printf("Tapas del objeto desactivadas.\n");
+                  tapas = false;
+               } else {
+                  printf("Tapas del objeto activadas. \n");
+                  tapas = true;
                }
             }
          break;

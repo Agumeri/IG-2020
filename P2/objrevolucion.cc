@@ -2,6 +2,7 @@
 #include "objrevolucion.h"
 #include "objply.h"
 #include "math.h"
+#include <algorithm>
 
 
 // *****************************************************************************
@@ -13,7 +14,6 @@
 
 // *****************************************************************************
 // objeto de revolución obtenido a partir de un perfil (en un PLY)
-
 ObjRevolucion::ObjRevolucion() {}
 
 ObjRevolucion::ObjRevolucion(const std::string & archivo, int num_instancias, bool tapa_sup, bool tapa_inf) {
@@ -22,10 +22,9 @@ ObjRevolucion::ObjRevolucion(const std::string & archivo, int num_instancias, bo
    // creamos el vector de los vectores del perfil (perfil_original) y leemos los vertices
    std::vector<Tupla3f> perfil_original;
    ply::read_vertices(archivo, perfil_original);
-
-   std::cout << "Tamaño perfil_original: " << perfil_original.size() << std::endl;
    
    // creamos la malla para el perfil escogido
+   
    crearMalla(perfil_original, num_instancias, tapa_sup, tapa_inf);
 
 }
@@ -35,22 +34,50 @@ ObjRevolucion::ObjRevolucion(const std::string & archivo, int num_instancias, bo
 
  
 ObjRevolucion::ObjRevolucion(std::vector<Tupla3f> archivo, int num_instancias, bool tapa_sup, bool tapa_inf) {
-    
+    crearMalla(archivo, num_instancias, tapa_sup, tapa_inf);
 }
 
 void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_instancias, bool tapa_sup, bool tapa_inf) {
-   bool tps = false,
-        tpi = false;
-
+   // std::cout<<"quito el vertice 1 de perfil original" << perfil_original[0] << std::endl;
    // NUMERO PARA DIVIDIRLO POR N DENTRO DE LAS TABLAS
    float angulo_radianes = 2*M_PI;
    
+   // creacion de la tabla de vertices (la dejamos vacia)
+   this->v.clear();
+
+   // cambiar orientacion si es necesario del perfil si es necesario
+   if (perfil_original[0][1] > perfil_original[perfil_original.size()-1][1]){
+      std::reverse(perfil_original.begin(), perfil_original.end());
+   }
+
+   // Selección del vertice de la tapa superior e inferior
+   //******************************************************
+   // Usar los booleanos para la parte extra
+   //******************************************************
+   //******************************************************
+   Tupla3f polo_sur, polo_norte;
+   
+   // polo sur
+   if(perfil_original[0][0] == 0.0){
+      polo_sur = perfil_original[0];
+      perfil_original.erase(perfil_original.begin());
+   }else{
+      polo_sur = {0,perfil_original[0][1],0};
+   } 
+   //
+
+   // polo norte
+   if(perfil_original[perfil_original.size()-1][0] == 0.0){
+      polo_norte = perfil_original[perfil_original.size()-1];
+      perfil_original.pop_back();
+   }else{
+      polo_norte = {0,perfil_original[perfil_original.size()-1][1],0};
+   } 
+   //
+
    // asignamos el valor correspondiente M y N
    this->N = num_instancias;
    this->M = perfil_original.size();
-
-   // creacion de la tabla de vertices (la dejamos vacia)
-   this->v.clear();
 
    // Añadimos los vertices a la tabla de vertices
    for(int i=0; i<=N-1; i++){
@@ -67,32 +94,12 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       }
    }
 
-   // Selección del vertice de la tapa superior e inferior
-   //******************************************************
-   // Usar los booleanos para la parte extra
-   //******************************************************
-   //******************************************************
-   Tupla3f polo_sur, polo_norte;
+   // // añadimos las tapas necesarias a la tabla de vertices
+   this->v.push_back(polo_sur);     // N*M
+   this->v.push_back(polo_norte);   // N*M+1
 
-   // polo sur
-   if(perfil_original[0][0] == 0.0){
-      this->v.push_back(perfil_original[0]);
-      this->v.erase(this->v.begin());
-   }else{
-      polo_sur = {0,perfil_original[0][1],0};
-      tpi = true;
-   } 
-   //
-
-   // polo sur
-   if(perfil_original[M-1][0] == 0.0){
-      this->v.push_back(perfil_original[M-1]);
-      this->v.erase(this->v.end()-1);
-   }else{
-      polo_norte = {0,perfil_original[M-1][1],0};
-      tps = true;
-   } 
-   //
+   // for(int i=0; i<v.size(); i++)
+   //    std::cout << "Vertice " << i << ": " << v[i] << std::endl;
 
    // creacion de la tabla de caras (la dejamos vacia)
    this->f.clear();
@@ -114,23 +121,18 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
       }
    }   
 
-   // // añadimos las tapas necesarias a la tabla de vertices
-   if(tpi) this->v.push_back(polo_sur);     // N*M
-   if(tps) this->v.push_back(polo_norte);   // N*M+1
-
    // añadimos los triangulos
    // primero la tapa inferior
-   /////////////////////////////////////////////////
-   // HECHO EN SENTIDO HORARIO, PREGUNTAR A PABLO //
-   /////////////////////////////////////////////////
+   tam_sin_tapas = f.size();
 
    if (tapa_inf)
    {
+      
       for (int i = 0; i < N; i++)
       {
          Tupla3i aux(
-             M * i,
              M * ((i + 1) % N), // pinta una cara 2 veces, revisar con pablo
+             M * i,
              N * M);
 
          this->f.push_back(aux);
@@ -140,15 +142,25 @@ void ObjRevolucion::crearMalla(std::vector<Tupla3f> perfil_original, int num_ins
    // // ahora la tapa superior
    if (tapa_sup)
    {
+      
       for (int i = 0; i < N; i++)
       {
          Tupla3i aux(
              M * (i + 1) - 1,
              M * (((i + 1) % N) + 1) - 1, // pinta una cara 2 veces, revisar con pablo
-             N * M + 1);
+             N * M + 1
+            );
 
          this->f.push_back(aux);
       }
+      
    }
    //******************************************************
+
 }
+
+void ObjRevolucion::VerTapas(bool tapas){
+   if(tapas) tam_f = f.size();
+   else tam_f = tam_sin_tapas;
+}
+

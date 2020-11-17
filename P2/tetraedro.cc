@@ -31,5 +31,7 @@ Tetraedro::Tetraedro(float lado)
    f[1] = { 1, 3, 2};
    f[2] = { 0, 2, 3};
    f[3] = { 0, 3, 1};
+
+   tam_f = f.size();
 }
 

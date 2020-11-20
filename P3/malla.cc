@@ -1,5 +1,6 @@
 #include "aux.h"
 #include "malla.h"
+#include "math.h"
 
 // *****************************************************************************
 //
@@ -290,4 +291,50 @@ void Malla3D::inicializarColores(){
       c_line[i] = {0.0, 0.0, 0.0};
       c_point[i] = {0.0, 1.0, 1.0};
    }
+}
+
+void Malla3D::calcularNormales(){
+   Tupla3f p, q, r,        // vertices
+           a, b, m, n;        // vectores
+   float prod_esc;
+
+   nc.clear();
+   // recorremos el vector de caras para ir haciendo las normales
+   // de cada una e ir almacenandolas dentro de la tupla nc
+   for(int i=0; i<f.size(); i++){
+      // obtenemos los vértices de la cara
+      p = v[f[i][0]];
+      q = v[f[i][1]];
+      r = v[f[i][2]];
+
+      // obtenemos los vectores a y b a partir de los vertices
+      a = q - p;
+      b = r - p;
+
+      // obtenemos el vector m haciendo el producto vectorial de a y b
+      m[0] = a[1]*b[2] - a[2]*b[1];
+      m[1] = a[0]*b[2] - a[2]*b[0];
+      m[2] = a[0]*b[1] - a[1]*b[0];
+
+      // finalmente, obtenemos el vector normal de la cara y lo
+      // almacenammos dentro del vector de normales nc
+      prod_esc = sqrt(pow(m[0],2) + pow(m[1],2) + pow(m[2],2));
+      for(int i=0; i<3; i++) n[i] = m[i] / prod_esc;
+      
+      // una vez calculado el vector normal, lo almacenamos
+      nc.push_back(n);
+   }
+
+   nv.clear();
+   nv.resize(v.size());
+   // recorremos el vector de vertices para ir haciendo las normales
+   // de cada uno e ir almacenandolas dentro de la tupla nv
+   for(int i=0; i<f.size(); i++){
+      nv[f[i][0]] = nv[f[i][0]] + nc[i];
+      nv[f[i][1]] = nv[f[i][1]] + nc[i];
+      nv[f[i][2]] = nv[f[i][2]] + nc[i];
+   }
+
+   // normalizamos cada uno de los vectores;
+   for(int i=0; i<nv.size(); i++) nv[i] = nv[i].normalized();
 }

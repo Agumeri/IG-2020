@@ -30,7 +30,7 @@ Escena::Escena()
 
     // objetos que cargan archivos ply
       obj_ply = new ObjPLY("plys/big_dodge.ply");  // Este objeto sirve para cargar los 3 primeros archivos
-      peon = new ObjRevolucion("plys/peon.ply",10,true,true); 
+      peon = new ObjRevolucion("plys/!peon.ply",10,true,true); 
       lata_cue = new ObjRevolucion("plys/lata-pcue.ply",10,true,true);
       lata_inf = new ObjRevolucion("plys/lata-pinf.ply",10,true,true);
       lata_sup = new ObjRevolucion("plys/lata-psup.ply",10,true,true);
@@ -98,7 +98,7 @@ void Escena::dibujar()
 
    if(obj == PEON) {
       glScalef(40,40,40);
-      peon->VerTapas();
+      peon->VerTapas(tapas);
       peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    }
 

@@ -10,6 +10,8 @@
 #include "cono.h"
 #include "cilindro.h"
 #include "esfera.h"
+#include "luzposicional.h"
+#include "luzdireccional.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO, TAPASEJECUCION} menu;
 typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS} objetos;
@@ -47,6 +49,8 @@ class Escena
    
    // Objetos de la escena
    Ejes ejes;
+   LuzDireccional * luz_d = nullptr;
+   LuzPosicional * luz_p = nullptr;
    Cubo * cubo = nullptr ; // es importante inicializarlo a 'nullptr'
    Tetraedro * tetraedro = nullptr ; // es importante inicializarlo a 'nullptr'
    // objetos PLY

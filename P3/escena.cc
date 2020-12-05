@@ -1,5 +1,6 @@
 #include "aux.h"     // includes de OpenGL/glut/glew, windows, y librería std de C++
 #include "escena.h"
+#include "material.h"
 #include "malla.h" // objetos: Cubo y otros....
 
 //**************************************************************************
@@ -8,33 +9,88 @@
 
 Escena::Escena()
 {
-    Front_plane       = 50.0;
-    Back_plane        = 2000.0;
-    Observer_distance = 4*Front_plane;
-    Observer_angle_x  = 0.0 ;
-    Observer_angle_y  = 0.0 ;
+   Front_plane       = 50.0;
+   Back_plane        = 2000.0;
+   Observer_distance = 4*Front_plane;
+   Observer_angle_x  = 0.0 ;
+   Observer_angle_y  = 0.0 ;
+   ejes.changeAxisSize( 5000 );
 
-    ejes.changeAxisSize( 5000 );
+   // iluminacion
+      // colores de la luz
+      Tupla4f colAmb(1.0,1.0,1.0,1.0),
+              colEspc(1.0,1.0,1.0,1.0),
+              colDif(1.0,1.0,1.0,1.0);
+      //
+      Tupla3f pos_luz(40,20,400);  // posicion de la luz
+      Tupla3f dir_luz(100,100,100); // direccion de la luz
+      luz_p = new LuzPosicional(pos_luz,GL_LIGHT1,colAmb,colEspc,colDif);
+      luz_d = new LuzDireccional(dir_luz,GL_LIGHT2,colAmb,colEspc,colDif);
+   //
 
-    // crear los objetos de la escena....
-    // .......COMPLETAR: ...
-    // ..... CREAR DATOS, NO LA ESTRUCTURA DE LA ESCENA.
-    cubo = new Cubo();
-    tetraedro = new Tetraedro();
-    
-    // objetos de revolución
+   // Materiales
+      // dependiendo del tipo de luz
+      Tupla4f silver_ambiente(0.19225,0.19225,0.19225,1.0),
+              silver_difuso(0.50754,0.50754,0.50754,1.0),
+              silver_especular(0.508273,0.508273,0.508273,1.0);
+      
+      Tupla4f ruby_ambiente(0.1745,0.01175,0.1175,1.0),
+              ruby_difuso(0.61424,0.04136,0.04136,1.0),
+              ruby_especular(0.727811,0.626959,0.626959,1.0);
+
+      Tupla4f bronze_ambiente(0.2125,0.1275,0.054,1.0),
+              bronze_difuso(0.714,0.4284,0.18144,1.0),
+              bronze_especular(0.393548,0.271906,0.166721,1.0);
+      
+      Tupla4f goma_negra_ambiente(0.02,0.02,0.02,1.0),
+              goma_negra_difuso(0.01,0.01,0.01,1.0),
+              goma_negra_especular(0.4,0.4,0.4,1.0);
+      //
+
+      // creamos los materiales a usar
+      Material silver = Material(silver_difuso,silver_especular,silver_ambiente,0.5 * 128.0);
+      Material ruby = Material(ruby_difuso,ruby_especular,ruby_ambiente,0.5*128.0);
+      Material bronze = Material(bronze_difuso,bronze_especular,bronze_ambiente,1.0*128.0);
+      Material goma_negra = Material(goma_negra_difuso,goma_negra_especular,goma_negra_ambiente,1.0*128.0);
+      //
+   //
+
+   // crear los objetos de la escena....
+   // .......COMPLETAR: ...
+   // ..... CREAR DATOS, NO LA ESTRUCTURA DE LA ESCENA.
+
+   // creados "a mano"
+      cubo = new Cubo();
+      tetraedro = new Tetraedro();
+   //
+
+   // objetos de revolución
       cono = new Cono(2,20,80,40,true,false);
       esfera = new Esfera(10,20,40,true,false);
       cilindro = new Cilindro(2,20,80,40,true,true);
-    
-
-    // objetos que cargan archivos ply
+   
+      // objetos que cargan archivos ply
       obj_ply = new ObjPLY("plys/big_dodge.ply");  // Este objeto sirve para cargar los 3 primeros archivos
       peon = new ObjRevolucion("plys/peon.ply",10,true,true); 
       lata_cue = new ObjRevolucion("plys/lata-pcue.ply",10,true,true);
       lata_inf = new ObjRevolucion("plys/lata-pinf.ply",10,true,true);
       lata_sup = new ObjRevolucion("plys/lata-psup.ply",10,true,true);
-    //
+      //
+   //
+
+   // asignamos los materiales a los objetos
+      cubo->setMaterial(ruby);
+      tetraedro->setMaterial(silver);
+      cono->setMaterial(silver);
+      esfera->setMaterial(goma_negra);
+      cilindro->setMaterial(ruby);
+      obj_ply->setMaterial(silver);
+      peon->setMaterial(ruby);
+      lata_cue->setMaterial(silver);
+      lata_inf->setMaterial(silver);
+      lata_sup->setMaterial(silver);
+   //
+
 }
 
 //**************************************************************************
@@ -73,20 +129,36 @@ void Escena::dibujar()
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
 
 	change_observer();
+   // Activar/desactivar iluminacion
+   if(glIsEnabled(GL_LIGHTING)) glDisable(GL_LIGHTING);
+
    ejes.draw();
+
+   // si la luz esta activada
+   if(modo_visual[4]){
+      glEnable(GL_LIGHTING);
+      glShadeModel(GL_SMOOTH);
+      // glShadelModel(GL_FLAT);
+      glEnable(GL_NORMALIZE);
+      
+      // this->luz_d->activar();
+   }
 
    // seleccion del modo de dibujado
    if(tipo_dibujo==INMEDIATO) modo_dibujado = 1;
    
    if(tipo_dibujo==DIFERIDO) modo_dibujado = 2;
 
-   
+
+
    // Seleccion del objeto a dibujar
    if(obj == CUBO){
-      cubo->calcularNormales();
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
       cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
    } 
-   
+
    if(obj == TETRAEDRO){  
       tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    } 
@@ -200,11 +272,11 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'O' :
          // ESTAMOS EN MODO SELECCION DE OBJETO
          modoMenu=SELOBJETO; 
-         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'Y': ObjetoPLY \n'H': Peon \n'I': Lata \n'J': Cono \n'B': Cilindro \n'N': Esfera \n'M': OBJETOS SIMULTANEOS \n");
+         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'Y': ObjetoPLY \n'H': Peon \n'W': Lata \n'J': Cono \n'B': Cilindro \n'N': Esfera \n'M': OBJETOS SIMULTANEOS \n");
          break ;
         case 'V' :
          // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
-         printf("Opciones disponibles: \n'L': Linea; \n'P': Puntos \n'S': Solido\n'A': Ajedrez\n");
+         printf("Opciones disponibles: \n'L': Linea; \n'P': Puntos \n'S': Solido\n'A': Ajedrez\n'I': Iluminacion\n");
          modoMenu=SELVISUALIZACION;
          break ;
        case 'D' :
@@ -281,7 +353,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
 
          //-------------------------------------------------
          //OBJETO PLY "LATA"
-         case 'I':
+         case 'W':
          // ESTAMOS EN MODO Tetraedro SELECCIONADO
          if(modoMenu==SELOBJETO){
             if(obj != LATA){
@@ -390,11 +462,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'P':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != PUNTOS && !modo_visual[0])
+               if (tipo_visual != PUNTOS && !modo_visual[4] && !modo_visual[0])
                {
                   printf("Visualizacion en modo PUNTOS activada.\n");
                   tipo_visual = PUNTOS;
                   modo_visual[0] = true;
+                  modo_visual[4] = false;
                   break;
                }
                else
@@ -410,11 +483,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'L':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != LINEAS && !modo_visual[1])
+               if (tipo_visual != LINEAS && !modo_visual[4] && !modo_visual[1])
                {
                   printf("Visualizacion en modo LINEAS activada.\n");
                   tipo_visual = LINEAS;
                   modo_visual[1] = true;
+                  modo_visual[4] = false;
                   break;
                }
                else
@@ -430,11 +504,12 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'S':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != SOLIDO && !modo_visual[2])
+               if (tipo_visual != SOLIDO && !modo_visual[4] && !modo_visual[2])
                {
                   printf("Visualizacion en modo SOLIDO activada.\n");
                   tipo_visual = SOLIDO;
                   modo_visual[2] = true;
+                  modo_visual[4] = false;
                   break;
                }
                else
@@ -446,15 +521,17 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
             }
          break;
 
+
          // AJEDREZ
          case 'A':
             if (modoMenu == SELVISUALIZACION)
             {
-               if (tipo_visual != AJEDREZ && !modo_visual[3])
+               if (tipo_visual != AJEDREZ && !modo_visual[4] && !modo_visual[3])
                {
                   printf("Visualizacion en modo AJEDREZ activada.\n");
                   tipo_visual = AJEDREZ;
                   modo_visual[3] = true;
+                  modo_visual[4] = false;
                   break;
                }
                else
@@ -462,6 +539,46 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                   printf("Visualizacion en modo AJEDREZ desactivada.\n");
                   tipo_visual = DEFAULT;
                   modo_visual[3] = false;
+               }
+            }
+         break;
+
+         // ILUMINADO
+         case 'I':
+            if (modoMenu == SELVISUALIZACION)
+            {
+               if (tipo_visual != ILUMINACION && !modo_visual[4])
+               {
+                  printf("Visualizacion en modo ILUMINADO activada.\n");
+                   printf("Opciones disponibles: \n'0': Luz posicional; \n'1': Luz diferida\n'A': Activar variacion angulo alfa\n'B': Activar variacion angulo beta\n'>': Incrementar angulo\n'<' Decrementar angulo\n");
+                  tipo_visual = ILUMINACION;
+                  // for(int i=0; i<3; i++) modo_visual[i] = false;
+                  modo_visual[4] = true;
+                  break;
+               }
+               else
+               {
+                  printf("Visualizacion en modo ILUMINADO desactivada.\n");
+                  tipo_visual = DEFAULT;
+                  modo_visual[4] = false;
+               }
+            }
+         break;
+
+         case '0':
+            if (modoMenu == SELVISUALIZACION)
+            {
+               if (tipo_visual == ILUMINACION && modo_visual[4] && !pos_activada)
+               {
+                  printf("Luz posicional activada\n");
+                  this->luz_p->activar();
+                  pos_activada = true;
+               }
+               else
+               {
+                  printf("Luz posicional desactivada\n");
+                  glDisable(GL_LIGHT1);
+                  pos_activada = false;
                }
             }
          break;

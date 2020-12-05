@@ -8,7 +8,7 @@ class Luz
     public:
         void activar();
 
-    private:
+    protected:
         Tupla4f posicion;
         GLenum id;
         Tupla4f colorAmbiente,

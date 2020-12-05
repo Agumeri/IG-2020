@@ -12,8 +12,8 @@ class LuzDireccional : public Luz
 
     public:
         // inicializar la fuente de luz
-        LuzDireccional(const Tupla2f & orientacion);
-        LuzDireccional(Tupla2f direccion, GLenum idLuzOpenGL, Tupla4f colorAmbiente, Tupla4f colorEspecular, Tupla4f colorDifuso);
+        LuzDireccional(const Tupla3f & orientacion);
+        LuzDireccional(Tupla3f direccion, GLenum idLuzOpenGL, Tupla4f colorAmbiente, Tupla4f colorEspecular, Tupla4f colorDifuso);
 
         // cambiar angulo
         void variarAnguloAlpha(float incremento);

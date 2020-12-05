@@ -243,6 +243,10 @@ void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool
    this->inicializarColores();
    color_pintar = "solido";
 
+   if(nv.empty()) this->calcularNormales();
+
+   m->aplicar();
+
    // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
    // solido y ajedrez serán independientes, mientras este ajedrez, no se podran ver los otros 3
    if (puntos){
@@ -337,4 +341,8 @@ void Malla3D::calcularNormales(){
 
    // normalizamos cada uno de los vectores;
    for(int i=0; i<nv.size(); i++) nv[i] = nv[i].normalized();
+}
+
+void Malla3D::setMaterial(Material mat){
+   m = new Material(mat);
 }

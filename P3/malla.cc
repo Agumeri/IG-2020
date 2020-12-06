@@ -319,6 +319,7 @@ void Malla3D::calcularNormales(){
       m[0] = a[1]*b[2] - a[2]*b[1];
       m[1] = a[0]*b[2] - a[2]*b[0];
       m[2] = a[0]*b[1] - a[1]*b[0];
+      // usar dot¿?¿¿?¿?¿?¿?
 
       // finalmente, obtenemos el vector normal de la cara y lo
       // almacenammos dentro del vector de normales nc

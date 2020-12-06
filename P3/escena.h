@@ -61,12 +61,16 @@ class Escena
    ObjRevolucion * lata_sup = nullptr;
    ObjRevolucion * lata_cue = nullptr;
 
+   ObjRevolucion * peon_silver = nullptr;
+   ObjRevolucion * peon_goma_negra = nullptr;
+
    Cono * cono = nullptr;
    Cilindro * cilindro = nullptr;
    Esfera * esfera = nullptr;
 
    // luces
    LuzDireccional * luz_d = nullptr;
+   LuzDireccional * luz_d2 = nullptr;
    LuzPosicional * luz_p = nullptr;
 
     //Array para comprobar que modos de visualizacion esta activado
@@ -75,6 +79,9 @@ class Escena
     // Booleanos para las tapas
     bool tapas = true;
     bool pos_activada = false;
+    bool direc_activada = false;
+    bool alfa = false;
+    bool beta = false;
 
     
    public:

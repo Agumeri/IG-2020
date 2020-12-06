@@ -28,5 +28,4 @@ void Material::aplicar(){
     // Asignamos el valor de brillo a un GLfloat para poder habilitarlo
     const GLfloat * brillo_valido = new GLfloat(this->brillo);
     glMaterialfv(GL_FRONT,GL_SHININESS,brillo_valido);
-    
 }

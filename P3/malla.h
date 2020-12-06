@@ -11,7 +11,7 @@
 #define MALLA3D_H_INCLUDED
 
 #include "aux.h"
-
+#include "material.h"
 // *****************************************************************************
 //
 // clase para objetos 3D (mallas indexadas)
@@ -47,9 +47,11 @@ class Malla3D
       // funcion que calcula y almacena las normales de las caras
       void calcularNormales();
 
+      // asignamos el material pasado por parametro a la malla
+      void setMaterial(Material mat); 
 
 protected:
-
+   Material * m = nullptr;
    void calcular_normales() ; // calcula tabla de normales de vértices (práctica 3)
    std::string color_pintar = "";
    
@@ -69,7 +71,6 @@ protected:
           id_vbo_color_chess_a = 0,
           id_vbo_color_chess_b = 0,
           id_vbo_tri_a = 0, id_vbo_tri_b = 0;
-
 } ;
 
 

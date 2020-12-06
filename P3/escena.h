@@ -10,11 +10,15 @@
 #include "cono.h"
 #include "cilindro.h"
 #include "esfera.h"
+#include "luz.h"
+#include "luzposicional.h"
+#include "luzdireccional.h"
+#include "material.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO, TAPASEJECUCION} menu;
 typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS} objetos;
 typedef enum {INMEDIATO, DIFERIDO} dibujado;
-typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ} visualizado;
+typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ, ILUMINACION} visualizado;
 
 class Escena
 {
@@ -57,15 +61,27 @@ class Escena
    ObjRevolucion * lata_sup = nullptr;
    ObjRevolucion * lata_cue = nullptr;
 
+   ObjRevolucion * peon_silver = nullptr;
+   ObjRevolucion * peon_goma_negra = nullptr;
+
    Cono * cono = nullptr;
    Cilindro * cilindro = nullptr;
    Esfera * esfera = nullptr;
 
+   // luces
+   LuzDireccional * luz_d = nullptr;
+   LuzDireccional * luz_d2 = nullptr;
+   LuzPosicional * luz_p = nullptr;
+
     //Array para comprobar que modos de visualizacion esta activado
-    bool modo_visual[4] = {false,false,true,false}; // puntos, lineas, solido, ajedrez
+    bool modo_visual[5] = {false,false,true,false,false}; // puntos, lineas, solido, ajedrez, iluminado
 
     // Booleanos para las tapas
     bool tapas = true;
+    bool pos_activada = false;
+    bool direc_activada = false;
+    bool alfa = false;
+    bool beta = false;
 
     
    public:

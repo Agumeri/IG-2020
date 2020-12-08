@@ -23,9 +23,11 @@ Escena::Escena()
               colDif(1.0,1.0,1.0,1.0);
       //
       Tupla3f pos_luz(0,0,300);  // posicion de la luz
+      Tupla3f pos_luz2(200,200,0);  // posicion de la luz
       Tupla3f dir_luz(-200,0,300); // direccion de la luz
       Tupla3f dir_luz2(200,0,300);
       luz_p = new LuzPosicional(pos_luz,GL_LIGHT1,colAmb,colEspc,colDif);
+      luz_p2 = new LuzPosicional(pos_luz2,GL_LIGHT3,colAmb,colEspc,colDif);
       luz_d = new LuzDireccional(dir_luz,GL_LIGHT2,colAmb,colEspc,colDif);
       // luz_d2 = new LuzDireccional(dir_luz2,GL_LIGHT3,colAmb,colEspc,colDif);
    //
@@ -62,7 +64,7 @@ Escena::Escena()
    // ..... CREAR DATOS, NO LA ESTRUCTURA DE LA ESCENA.
 
    // creados "a mano"
-      cubo = new Cubo();
+      cubo = new Cubo(50);
       tetraedro = new Tetraedro();
    //
 
@@ -83,14 +85,24 @@ Escena::Escena()
       //
    //
 
+   // objetos modelo jerarquico (PARTES TIE FIGHTER)
+      aleron_tie_fighter = new Aleron();
+      conector_ala = new Conector();
+      ala_derecha = new Ala();
+   //
+
    // asignamos los materiales a los objetos
-      cubo->setMaterial(bronze);
+      // aleron_tie_fighter->setMaterial(goma_negra);
+      // conector_ala->setMaterial(goma_negra);
+
+
+      cubo->setMaterial(ruby);
       tetraedro->setMaterial(silver);
       cono->setMaterial(silver);
       esfera->setMaterial(goma_negra);
       cilindro->setMaterial(ruby);
       obj_ply->setMaterial(silver);
-      peon->setMaterial(ruby);
+      peon->setMaterial(bronze);
       lata_cue->setMaterial(silver);
       lata_inf->setMaterial(silver);
       lata_sup->setMaterial(silver);
@@ -137,6 +149,7 @@ void Escena::dibujar()
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
 
 	change_observer();
+
    // Activar/desactivar iluminacion
    if(glIsEnabled(GL_LIGHTING)) glDisable(GL_LIGHTING);
 
@@ -147,8 +160,8 @@ void Escena::dibujar()
       glEnable(GL_LIGHTING);
       glEnable(GL_NORMALIZE);
 
-      // glShadeModel(GL_SMOOTH);
-      glShadeModel(GL_FLAT);
+      glShadeModel(GL_SMOOTH);
+      // glShadeModel(GL_FLAT);
    }
 
    // seleccion del modo de dibujado
@@ -160,10 +173,7 @@ void Escena::dibujar()
 
    // Seleccion del objeto a dibujar
    if(obj == CUBO){
-      glMatrixMode(GL_MODELVIEW);
-      glPushMatrix();
-      cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      glPopMatrix();
+      ala_derecha->dibuja(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    } 
 
    if(obj == TETRAEDRO){  
@@ -183,13 +193,22 @@ void Escena::dibujar()
    }
 
    if(obj == LATA){
-      glScalef(40,40,40);
-      lata_cue->VerTapas(tapas);
-      lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      lata_inf->VerTapas(tapas);
-      lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      lata_sup->VerTapas(tapas);
-      lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+         glScalef(40,40,40);
+         lata_cue->VerTapas(tapas);
+         lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+      // glPushMatrix();
+      //    glScalef(40,40,40);
+      //    lata_inf->VerTapas(tapas);
+      //    lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // glPopMatrix();
+      // glPushMatrix();
+      //    glScalef(40,40,40);
+      //    lata_sup->VerTapas(tapas);
+      //    lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // glPopMatrix();
    }
    
    if(obj == CONO){
@@ -213,28 +232,25 @@ void Escena::dibujar()
    if(obj == OBJSIMULTANEOS){
       glMatrixMode(GL_MODELVIEW);
 
-      // peon1
-      glPushMatrix();
-         glTranslatef(-100,0,0);
-         glScalef(40,40,40);
-         peon_silver->VerTapas(tapas);
-         peon_silver->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      glPopMatrix();
-      //
-
-      // peon2
-      glPushMatrix();
-         glTranslatef(100,0,0);
-         glScalef(40,40,40);
-         peon_goma_negra->VerTapas(tapas);
-         peon_goma_negra->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      glPopMatrix();
-      //
-
       // cubo
       glPushMatrix();
+         glScalef(5,5,5);
+         glTranslatef(-80,0,0);
+         glRotatef(90.0,0.0,1.0,0.0);
+         aleron_tie_fighter->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      glPushMatrix();
+         glScalef(10,10,10);
+         glTranslatef(10,0,0);
+         glRotatef(90.0,0.0,1.0,0.0);
+         aleron_tie_fighter->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      glPopMatrix();
+
+      glPushMatrix();
          glTranslatef(0,0,0);
-         cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+         esfera->VerTapas(tapas);
+         esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
       glPopMatrix();
 
       // // tetraedro
@@ -548,7 +564,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
 
 
          // AJEDREZ
-         X:
+         case 'A':
             if (modoMenu == SELVISUALIZACION)
             {
                if (tipo_visual != AJEDREZ && !modo_visual[4] && !modo_visual[3])
@@ -597,6 +613,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                {
                   printf("Luz posicional activada\n");
                   this->luz_p->activar();
+                  // this->luz_p2->activar();
                   pos_activada = true;
                   direc_activada = false;
                }
@@ -604,6 +621,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                {
                   printf("Luz posicional desactivada\n");
                   glDisable(GL_LIGHT1);
+                  // glDisable(GL_LIGHT3);
                   pos_activada = false;
                }
             }

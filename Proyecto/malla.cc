@@ -239,7 +239,7 @@ void Malla3D::draw_ModoDiferido(std::string color_pintar)
 void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool ajedrez)
 {
    // completar .....(práctica 1)
-   glEnable(GL_CULL_FACE);
+   // glEnable(GL_CULL_FACE);
    this->inicializarColores();
    color_pintar = "solido";
 
@@ -319,16 +319,17 @@ void Malla3D::calcularNormales(){
       m[0] = a[1]*b[2] - a[2]*b[1];
       m[1] = a[0]*b[2] - a[2]*b[0];
       m[2] = a[0]*b[1] - a[1]*b[0];
-      // usar dot¿?¿¿?¿?¿?¿?
+      // usar funcion dot¿?¿¿?¿?¿?¿?
 
       // finalmente, obtenemos el vector normal de la cara y lo
       // almacenammos dentro del vector de normales nc
       prod_esc = sqrt(pow(m[0],2) + pow(m[1],2) + pow(m[2],2));
-      for(int i=0; i<3; i++) n[i] = m[i] / prod_esc;
+      for(int j=0; j<3; j++) n[j] = m[j] / prod_esc;
       
       // una vez calculado el vector normal, lo almacenamos
       nc.push_back(n);
    }
+
 
    nv.clear();
    nv.resize(v.size());
@@ -342,6 +343,10 @@ void Malla3D::calcularNormales(){
 
    // normalizamos cada uno de los vectores;
    for(int i=0; i<nv.size(); i++) nv[i] = nv[i].normalized();
+
+   // Comprobar que sirve
+   // for(int i=0; i<nc.size(); i++)   std::cout << "\nX:" << nv[0][0] << " Y: " << nv[0][1] << " Z: " << nv[0][2] << "\n" << std::endl;
+   
 }
 
 void Malla3D::setMaterial(Material mat){

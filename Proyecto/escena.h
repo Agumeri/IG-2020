@@ -14,6 +14,9 @@
 #include "luzposicional.h"
 #include "luzdireccional.h"
 #include "material.h"
+#include "aleron.h"
+#include "conector.h"
+#include "ala.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO, TAPASEJECUCION} menu;
 typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS} objetos;
@@ -72,7 +75,14 @@ class Escena
    LuzDireccional * luz_d = nullptr;
    LuzDireccional * luz_d2 = nullptr;
    LuzPosicional * luz_p = nullptr;
+   LuzPosicional * luz_p2 = nullptr;
 
+   // objetos modelo jerarquico (PARTES TIE FIGHTER)
+   Aleron * aleron_tie_fighter = nullptr;
+   Conector * conector_ala = nullptr;
+   Ala * ala_derecha = nullptr;
+   //
+   
     //Array para comprobar que modos de visualizacion esta activado
     bool modo_visual[5] = {false,false,true,false,false}; // puntos, lineas, solido, ajedrez, iluminado
 

@@ -7,7 +7,7 @@
 class Esfera : public ObjRevolucion
 {
     public:
-        Esfera(int num_vert_perfil = 10, int num_instancias_perf = 20, float r = 40.0, bool tsup = true, bool tinf = false);
+        Esfera(int num_vert_perfil = 1, int num_instancias_perf = 2, float r = 4.0, bool tsup = true, bool tinf = false);
 
     private:
         float radio;

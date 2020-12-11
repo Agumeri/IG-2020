@@ -1,19 +1,43 @@
 #include "aux.h"
 #include "luz.h"
 #include "luzdireccional.h"
+#include "math.h"
 
-LuzDireccional::LuzDireccional(const Tupla3f & orientacion){
-    // Posicion luz 
-    for(int i=0; i<3; i++) posicion(i) = orientacion(i);
-    posicion(3) = 1.0;
+LuzDireccional::LuzDireccional(const Tupla2f & orientacion){
+    // Primero lo obtenemos en grados
+    alpha = orientacion[0];
+    beta = orientacion[1];
+
+    // Lo pasamos a radianes, y calculamos el angulo z (ganma)
+    alpha = sin(alpha*M_PI/180);
+    beta = cos(beta*M_PI/180);
+    float ganma = sin(alpha) * cos(beta);
+
+    // Asignamos cada angulo a su posicion correspondiente;
+    this->posicion[0] = alpha;
+    this->posicion[1] = beta;
+    this->posicion[2] = ganma;
+    this->posicion[3] = 0.0;
+    
 }
 
-LuzDireccional::LuzDireccional(Tupla3f direccion, GLenum idLuzOpenGL, Tupla4f colorAmbiente, Tupla4f colorEspecular, Tupla4f colorDifuso){
+LuzDireccional::LuzDireccional(Tupla2f direccion, GLenum idLuzOpenGL, Tupla4f colorAmbiente, Tupla4f colorEspecular, Tupla4f colorDifuso){
     //Asignamos los valores por parametro a su correspondiente lugar 
-    
-    // Posicion luz 
-    for(int i=0; i<3; i++) posicion(i) = direccion(i);
-    posicion(3) = 1.0;
+
+    // Primero lo obtenemos en grados
+    alpha = direccion[0];
+    beta = direccion[1];
+
+    // Lo pasamos a radianes, y calculamos el angulo z (ganma)
+    alpha = sin(alpha*M_PI/180);
+    beta = cos(beta*M_PI/180);
+    float ganma = sin(alpha) * cos(beta);
+
+    // Asignamos cada angulo a su posicion correspondiente;
+    this->posicion[0] = alpha;
+    this->posicion[1] = beta;
+    this->posicion[2] = ganma;
+    this->posicion[3] = 0.0;
 
     // IdLuz
     id = idLuzOpenGL;
@@ -26,8 +50,20 @@ LuzDireccional::LuzDireccional(Tupla3f direccion, GLenum idLuzOpenGL, Tupla4f co
 
 void LuzDireccional::variarAnguloAlpha(float incremento){
     alpha += incremento;
+
+    alpha = sin(alpha*M_PI/180);
+    float ganma = sin(alpha) * cos(beta);
+
+    this->posicion[0] = alpha;
+    this->posicion[2] = ganma;
 }
 
 void LuzDireccional::variarAnguloBeta(float incremento){
     beta += incremento;
+
+    beta = cos(beta*M_PI/180);
+    float ganma = sin(alpha) * cos(beta);
+
+    this->posicion[1] = beta;
+    this->posicion[2] = ganma;
 }

@@ -15,11 +15,13 @@
 #include "luzdireccional.h"
 #include "material.h"
 #include "aleron.h"
-#include "conector.h"
+#include "conector_superior.h"
+#include "conector_inferior.h"
 #include "ala.h"
+#include "tiefighter.h"
 
 typedef enum {NADA, SELOBJETO,SELVISUALIZACION,SELDIBUJADO, TAPASEJECUCION} menu;
-typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS} objetos;
+typedef enum {VACIO, CUBO, TETRAEDRO, OBJPLY, PEON, LATA, CONO, CILINDRO, ESFERA, OBJSIMULTANEOS, TIEFIGHTER} objetos;
 typedef enum {INMEDIATO, DIFERIDO} dibujado;
 typedef enum {DEFAULT, PUNTOS, LINEAS, SOLIDO, AJEDREZ, ILUMINACION} visualizado;
 
@@ -71,18 +73,19 @@ class Escena
    Cilindro * cilindro = nullptr;
    Esfera * esfera = nullptr;
 
+   // objetos del modelo jerárquico
+    Aleron * aleron = nullptr;
+    ConectorSuperior * conec_sup = nullptr;
+    ConectorInferior * conec_inf = nullptr;
+    Ala * ala = nullptr;
+    TieFighter * tiefighter = nullptr;
+   //
+
    // luces
    LuzDireccional * luz_d = nullptr;
    LuzDireccional * luz_d2 = nullptr;
    LuzPosicional * luz_p = nullptr;
-   LuzPosicional * luz_p2 = nullptr;
 
-   // objetos modelo jerarquico (PARTES TIE FIGHTER)
-   Aleron * aleron_tie_fighter = nullptr;
-   Conector * conector_ala = nullptr;
-   Ala * ala_derecha = nullptr;
-   //
-   
     //Array para comprobar que modos de visualizacion esta activado
     bool modo_visual[5] = {false,false,true,false,false}; // puntos, lineas, solido, ajedrez, iluminado
 

@@ -23,11 +23,9 @@ Escena::Escena()
               colDif(1.0,1.0,1.0,1.0);
       //
       Tupla3f pos_luz(0,0,300);  // posicion de la luz
-      Tupla3f dir_luz(-200,0,300); // direccion de la luz
-      Tupla3f dir_luz2(200,0,300);
+      Tupla2f dir_luz(0,45); // direccion de la luz
       luz_p = new LuzPosicional(pos_luz,GL_LIGHT1,colAmb,colEspc,colDif);
       luz_d = new LuzDireccional(dir_luz,GL_LIGHT2,colAmb,colEspc,colDif);
-      // luz_d2 = new LuzDireccional(dir_luz2,GL_LIGHT3,colAmb,colEspc,colDif);
    //
 
    // Materiales
@@ -137,18 +135,19 @@ void Escena::dibujar()
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // Limpiar la pantalla
 
 	change_observer();
-   // Activar/desactivar iluminacion
+   
+   // Desactivamos la iluminacion para que se vean los ejes
    if(glIsEnabled(GL_LIGHTING)) glDisable(GL_LIGHTING);
 
    ejes.draw();
 
-   // si la luz esta activada
+   // si el booleano de luz esta activaddo, activamos luz
    if(modo_visual[4]){
       glEnable(GL_LIGHTING);
       glEnable(GL_NORMALIZE);
 
-      // glShadeModel(GL_SMOOTH);
-      glShadeModel(GL_FLAT);
+      glShadeModel(GL_SMOOTH);
+      // glShadeModel(GL_FLAT);
    }
 
    // seleccion del modo de dibujado
@@ -186,10 +185,10 @@ void Escena::dibujar()
       glScalef(40,40,40);
       lata_cue->VerTapas(tapas);
       lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      lata_inf->VerTapas(tapas);
-      lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      lata_sup->VerTapas(tapas);
-      lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // lata_inf->VerTapas(tapas);
+      // lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+      // lata_sup->VerTapas(tapas);
+      // lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    }
    
    if(obj == CONO){
@@ -237,33 +236,6 @@ void Escena::dibujar()
          cubo->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
       glPopMatrix();
 
-      // // tetraedro
-      // glPushMatrix();
-      //    glTranslatef(-100,0,0);
-      //    tetraedro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // glPopMatrix();
-
-      // // cono
-      // glPushMatrix();
-      //    // glScalef(40,40,40);
-      //    glTranslatef(0,0,0);
-      //    cono->VerTapas(tapas);
-      //    cono->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // glPopMatrix();
-
-      // // cilindro
-      // glPushMatrix();
-      //    glTranslatef(100,0,0);
-      //    cilindro->VerTapas(tapas);
-      //    cilindro->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // glPopMatrix();
-
-      // // esfera
-      // glPushMatrix();
-      //    glTranslatef(200,0,0);
-      //    esfera->VerTapas(tapas);
-      //    esfera->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // glPopMatrix();
    }
 }
 //**************************************************************************
@@ -548,7 +520,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
 
 
          // AJEDREZ
-         X:
+         case 'A':
             if (modoMenu == SELVISUALIZACION)
             {
                if (tipo_visual != AJEDREZ && !modo_visual[4] && !modo_visual[3])
@@ -577,7 +549,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                   printf("Visualizacion en modo ILUMINADO activada.\n");
                   printf("Opciones disponibles: \n'0': Luz posicional; \n'4': Luz diferida\n'X': Activar variacion angulo alfa\n'K': Activar variacion angulo beta\n'>': Incrementar angulo\n'<' Decrementar angulo\n");
                   tipo_visual = ILUMINACION;
-                  // for(int i=0; i<3; i++) modo_visual[i] = false;
                   modo_visual[4] = true;
                   break;
                }
@@ -616,7 +587,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                {
                   printf("Luz posicional activada\n");
                   this->luz_d->activar();
-                  // this->luz_d2->activar();
                   direc_activada = true;
                   pos_activada = false;
                }
@@ -624,7 +594,6 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                {
                   printf("Luz posicional desactivada\n");
                   glDisable(GL_LIGHT2);
-                  // glDisable(GL_LIGHT3);
                   direc_activada = false;
                }
             }
@@ -670,8 +639,8 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                if (tipo_visual == ILUMINACION && modo_visual[4] && direc_activada)
                {
                   printf("Incrementando angulo\n");
-                  if(alfa) this->luz_d->variarAnguloAlpha(1);
-                  else if(beta) this->luz_d->variarAnguloBeta(1);
+                  if(alfa) this->luz_d->variarAnguloAlpha(10);
+                  else if(beta) this->luz_d->variarAnguloBeta(10);
                }
             }
          break;
@@ -682,8 +651,8 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
                if (tipo_visual == ILUMINACION && modo_visual[4] && direc_activada)
                {
                   printf("Decrementar angulo\n");
-                  if(alfa) this->luz_d->variarAnguloAlpha(-1);
-                  else if(beta) this->luz_d->variarAnguloBeta(-1);
+                  if(alfa) this->luz_d->variarAnguloAlpha(-10);
+                  else if(beta) this->luz_d->variarAnguloBeta(-10);
                }
             }
          break;

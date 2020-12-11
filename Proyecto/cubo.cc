@@ -11,6 +11,7 @@ Cubo::Cubo(float lado)
    // (es importante en cada cara ordenar los vértices en sentido contrario
    //  de las agujas del reloj, cuando esa cara se observa desde el exterior del cubo)
 
+
    // Redimensionamos las tuplas v y f
    v.resize(8);
    f.resize(12);
@@ -54,19 +55,3 @@ Cubo::Cubo(float lado)
 
    tam_f = f.size();
 }
-
-// void Cubo::resize_v(int n){
-//    if(n>=0) v.resize(n);
-// }
-
-// void Cubo::resize_f(int n){
-//    if(n>=0) f.resize(n);
-// }
-
-// void Cubo::set_v(int num_v, float _x, float _y, float _z){
-//    v[num_v] = {-_x/2, -_y/2, _z/2};
-// }
-
-// void Cubo::set_f(int num_f, int v_x, int v_y, int v_z){
-//    f[num_f] = {v_x, v_y, v_z};
-// }

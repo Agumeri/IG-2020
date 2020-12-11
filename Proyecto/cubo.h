@@ -25,12 +25,9 @@
 class Cubo : public Malla3D
 {
    public:
-      Cubo(float lado=1) ;
-      // void resize_v(int n);
-      // void resize_f(int n);
-      // void set_v(int num_v, float _x, float _y, float _z);
-      // void set_f(int num_f, int v_x, int v_y, int v_z);
-};
+   Cubo(float l=50) ;
+
+} ;
 
 
 

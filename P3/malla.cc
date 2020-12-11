@@ -243,9 +243,11 @@ void Malla3D::draw(int modo_dibujado, bool puntos, bool lineas,bool solido, bool
    this->inicializarColores();
    color_pintar = "solido";
 
-   if(nv.empty()) this->calcularNormales();
+   // ponemos un filtro que hace que las normales sole se calculen una vez (si nv esta vacio)
+   if(nv.empty()) this->calcular_normales(); 
 
-   m->aplicar();
+   // aplicamos el material si está indicado en la malla
+   if(m != nullptr) m->aplicar();
 
    // contemplar que aspectos se van a visualizar (puntos, lineas, solido, ajedrez)
    // solido y ajedrez serán independientes, mientras este ajedrez, no se podran ver los otros 3
@@ -297,7 +299,7 @@ void Malla3D::inicializarColores(){
    }
 }
 
-void Malla3D::calcularNormales(){
+void Malla3D::calcular_normales(){
    Tupla3f p, q, r,        // vertices
            a, b, m, n;        // vectores
    float prod_esc;
@@ -342,6 +344,8 @@ void Malla3D::calcularNormales(){
 
    // normalizamos cada uno de los vectores;
    for(int i=0; i<nv.size(); i++) nv[i] = nv[i].normalized();
+
+   std::cout << "X: " << nv[0][0] << " Y: " << nv[0][1] << " Z: " << nv[0][2] << std::endl;
 }
 
 void Malla3D::setMaterial(Material mat){

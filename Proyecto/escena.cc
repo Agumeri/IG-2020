@@ -81,6 +81,14 @@ Escena::Escena()
       //
    //
 
+   // objetos del modelo jerárquico
+      aleron = new Aleron();
+      conec_sup = new ConectorSuperior();
+      conec_inf = new ConectorInferior();
+      ala = new Ala();
+      tiefighter = new TieFighter();
+   //
+
    // asignamos los materiales a los objetos
       cubo->setMaterial(bronze);
       tetraedro->setMaterial(silver);
@@ -158,6 +166,25 @@ void Escena::dibujar()
 
 
    // Seleccion del objeto a dibujar
+   if(obj == TIEFIGHTER){
+      // aleron
+      // aleron->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   
+      // conector_superior
+      // conec_sup->dibuja(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   
+      // conector_inferior
+      // conec_inf->dibuja(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   
+      // ala (por defecto es la derecha)
+      // ala->dibuja(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+
+      // TieFighter (ambas alas y cabina (una esfera))
+      tiefighter->dibuja(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
+   
+   }
+
+
    if(obj == CUBO){
       glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
@@ -179,16 +206,6 @@ void Escena::dibujar()
       glScalef(40,40,40);
       peon->VerTapas(tapas);
       peon->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-   }
-
-   if(obj == LATA){
-      glScalef(40,40,40);
-      lata_cue->VerTapas(tapas);
-      lata_cue->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // lata_inf->VerTapas(tapas);
-      // lata_inf->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
-      // lata_sup->VerTapas(tapas);
-      // lata_sup->draw(modo_dibujado, modo_visual[0], modo_visual[1], modo_visual[2], modo_visual[3]);
    }
    
    if(obj == CONO){
@@ -269,7 +286,7 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
       case 'O' :
          // ESTAMOS EN MODO SELECCION DE OBJETO
          modoMenu=SELOBJETO; 
-         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'Y': ObjetoPLY \n'H': Peon \n'W': Lata \n'J': Cono \n'B': Cilindro \n'N': Esfera \n'M': OBJETOS SIMULTANEOS \n");
+         printf("Opciones disponibles: \n'C': Cubo \n'T': Tetraedro \n'Y': ObjetoPLY \n'H': Peon \n'W': TieFighter \n'J': Cono \n'B': Cilindro \n'N': Esfera \n'M': OBJETOS SIMULTANEOS \n");
          break ;
         case 'V' :
          // ESTAMOS EN MODO SELECCION DE MODO DE VISUALIZACION
@@ -353,11 +370,11 @@ bool Escena::teclaPulsada( unsigned char tecla, int x, int y )
          case 'W':
          // ESTAMOS EN MODO Tetraedro SELECCIONADO
          if(modoMenu==SELOBJETO){
-            if(obj != LATA){
-               printf("Objeto PLY 'LATA' seleccionado.\n");
-               obj=LATA;
+            if(obj != TIEFIGHTER){
+               printf("Objeto TIE FIGHTER seleccionado.\n");
+               obj=TIEFIGHTER;
             }else{
-               printf("Ocultando objeto 'LATA' PLY\n");
+               printf("Ocultando objeto TIE FIGHTER\n");
                obj=VACIO;
             }
          }
